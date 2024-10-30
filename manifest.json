@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "locale": "en_US",
+  "platform": "4.4.0",
+  "metadata": {
+    "appmode": "quarto-static",
+    "primary_rmd": "index.qmd",
+    "primary_html": null,
+    "content_category": null,
+    "has_parameters": false
+  },
+  "quarto": {
+    "version": "1.5.57",
+    "engines": ["markdown"]
+  },
+  "packages": null,
+  "files": {
+    "_book/index.html": {
+      "checksum": "7a03f5d6145902454806006214801aee"
+    },
+    "_book/intro.html": {
+      "checksum": "3ec43f65dcaa465ae7544db31623fc90"
+    },
+    "_book/references.html": {
+      "checksum": "bfc1f45ef39760318159871daa34fbc2"
+    },
+    "_book/search.json": {
+      "checksum": "f040b97c622cb367639190f5e8eb3857"
+    },
+    "_book/site_libs/bootstrap/bootstrap-icons.css": {
+      "checksum": "2318f137d201fbf51601fa0faba6bef7"
+    },
+    "_book/site_libs/bootstrap/bootstrap-icons.woff": {
+      "checksum": "1a51dfbe5467607389d603c02a77cd10"
+    },
+    "_book/site_libs/bootstrap/bootstrap.min.css": {
+      "checksum": "9c60edc64bb94ca6d511c718384c3621"
+    },
+    "_book/site_libs/bootstrap/bootstrap.min.js": {
+      "checksum": "e2b09c06f0e714b6144a6788a28e3950"
+    },
+    "_book/site_libs/clipboard/clipboard.min.js": {
+      "checksum": "15f52a1ee547f2bdd46e56747332ca2d"
+    },
+    "_book/site_libs/quarto-diagram/mermaid-init.js": {
+      "checksum": "0eb10962181f40af4621777eeb053309"
+    },
+    "_book/site_libs/quarto-diagram/mermaid.css": {
+      "checksum": "0aeecd8a816e25e43a41943c6146c2b7"
+    },
+    "_book/site_libs/quarto-diagram/mermaid.min.js": {
+      "checksum": "2c3bab09d559ac845c4815907005ddea"
+    },
+    "_book/site_libs/quarto-html/anchor.min.js": {
+      "checksum": "91bcf6cd1fd88fec3f109811e5fc3546"
+    },
+    "_book/site_libs/quarto-html/popper.min.js": {
+      "checksum": "3a4a291ccf3f1ea0f82b641542fd3827"
+    },
+    "_book/site_libs/quarto-html/quarto-syntax-highlighting.css": {
+      "checksum": "ab2b9e94a89b131e869fd951d6355545"
+    },
+    "_book/site_libs/quarto-html/quarto.js": {
+      "checksum": "7563d37e31580c9573af5b12aa3779a2"
+    },
+    "_book/site_libs/quarto-html/tippy.css": {
+      "checksum": "ebd6f8ce46a677e1a4f5f8a8317109a9"
+    },
+    "_book/site_libs/quarto-html/tippy.umd.min.js": {
+      "checksum": "d828775275749701b48bd9d958814111"
+    },
+    "_book/site_libs/quarto-nav/headroom.min.js": {
+      "checksum": "ace0360e576db9b6e7df48ac68ddbbf4"
+    },
+    "_book/site_libs/quarto-nav/quarto-nav.js": {
+      "checksum": "12d334846b27bdb493298c08277bdf7f"
+    },
+    "_book/site_libs/quarto-search/autocomplete.umd.js": {
+      "checksum": "c64544db941e048f2652217cb9a7f29c"
+    },
+    "_book/site_libs/quarto-search/fuse.min.js": {
+      "checksum": "de7d60e4a6881074275feca14b84a49d"
+    },
+    "_book/site_libs/quarto-search/quarto-search.js": {
+      "checksum": "bb16b7e73be13eba97c99d25b2a476b3"
+    },
+    "_book/summary.html": {
+      "checksum": "9c219bb08a69e5f312b815ac5f66907d"
+    },
+    "_quarto.yml": {
+      "checksum": "0e855c04a34adc1e902126c2a3b56cae"
+    },
+    "cover.png": {
+      "checksum": "308012df3fa962ae61c7114806331a72"
+    },
+    "index.qmd": {
+      "checksum": "87ba4294d4be2d217fcab8d62d711f22"
+    },
+    "intro.qmd": {
+      "checksum": "2f13bbd314e9cb5ace8ccbfedafe3fc3"
+    },
+    "references.bib": {
+      "checksum": "82c1cc91cf544d383b6a5ad1b65a6feb"
+    },
+    "references.qmd": {
+      "checksum": "20d3273ad995f344fa1d144ca5d3ecf1"
+    },
+    "summary.qmd": {
+      "checksum": "2784e8b5a022118984660f29991ee274"
+    }
+  },
+  "users": null
+}

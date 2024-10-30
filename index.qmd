@@ -1,0 +1,5 @@
+# Preface {.unnumbered}
+
+This is book documents World Bank practices and standards to work with SDMX.
+
+To learn more about SDMX books visit <https://sdmx.org/>.
