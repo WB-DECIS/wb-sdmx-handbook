@@ -1,3 +1,28 @@
 # Introduction
 
-More information to be added soon
+This handbook serves as a **practical reference** for staff working with **SDMX-based workflows** in our organization. Rather than introducing the SDMX standard itself, this guide **documents our internal processes, tools, and best practices** for managing data and data structures.
+
+By consolidating our workflows into a structured resource, this handbook aims to help **standardize procedures, improve consistency, and support knowledge transfer** across teams. Whether onboarding new colleagues or streamlining daily operations, this document aims to provides clear, step-by-step guidance on key SDMX-related tasks.
+
+## **Scope of This Handbook**
+
+This handbook focuses on the following key processes:
+
+-   **Generating and maintaining data structures:**
+
+    -   **Data Structure Definition (DSD)**: Guidelines for defining and maintaining data structures using the matrix generator and FMR.\
+    -   **Referential Metadata**: Guidelines for creating and maintaining metadata using the Metadata Editor, FMR, and .Stat Suite
+
+-   **Preparing and validating data**:
+
+    -   **Formatting data**: Formatting data according to a given DSD.
+
+    -   **validating data**: Ensure that data conforms to the specified DSD
+
+-   **Managing data in .Stat Suite**: Procedures for uploading, transferring, and publishing data using .Stat Suite.
+
+## **Who Should Use This Handbook?**
+
+This resource is designed for staff **already familiar with SDMX** who are responsible for data production and dissemination. It aims at providing detailed guidance to help users perform tasks efficiently and in alignment with established workflows.
+
+As SDMX tools and practices evolve, this handbook will be regularly updated to reflect improvements and new methodologies. Contributions and feedback from colleagues are encouraged to ensure that this remains a **reliable and up-to-date resource**.
