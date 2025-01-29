@@ -1,31 +1,34 @@
 {
   "version": 1,
   "locale": "en_US",
-  "platform": "4.4.0",
+  "platform": "4.4.2",
   "metadata": {
     "appmode": "quarto-static",
-    "primary_rmd": "index.qmd",
+    "primary_rmd": "./index.qmd",
     "primary_html": null,
     "content_category": null,
     "has_parameters": false
   },
   "quarto": {
-    "version": "1.5.57",
+    "version": "1.6.40",
     "engines": ["markdown"]
   },
   "packages": null,
   "files": {
     "_book/index.html": {
-      "checksum": "7a03f5d6145902454806006214801aee"
+      "checksum": "dc8f902deb28880ccf0e802902e81236"
     },
     "_book/intro.html": {
-      "checksum": "3ec43f65dcaa465ae7544db31623fc90"
+      "checksum": "ff666f04e1607c2b4813a3d6552993c4"
     },
     "_book/references.html": {
-      "checksum": "bfc1f45ef39760318159871daa34fbc2"
+      "checksum": "9b8e47662e0b99101f8caa21b21f001f"
     },
     "_book/search.json": {
-      "checksum": "53daea75371d9c6a26ac12e8805484fe"
+      "checksum": "6fb9c68f33c7abafec2aae7adb337ba1"
+    },
+    "_book/site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css": {
+      "checksum": "8da5b4427184b79ecddefad3d342027e"
     },
     "_book/site_libs/bootstrap/bootstrap-icons.css": {
       "checksum": "2318f137d201fbf51601fa0faba6bef7"
@@ -43,13 +46,13 @@
       "checksum": "15f52a1ee547f2bdd46e56747332ca2d"
     },
     "_book/site_libs/quarto-diagram/mermaid-init.js": {
-      "checksum": "0eb10962181f40af4621777eeb053309"
+      "checksum": "35cf34474c6b3cb3e659633a985a71cd"
     },
     "_book/site_libs/quarto-diagram/mermaid.css": {
       "checksum": "0aeecd8a816e25e43a41943c6146c2b7"
     },
     "_book/site_libs/quarto-diagram/mermaid.min.js": {
-      "checksum": "2c3bab09d559ac845c4815907005ddea"
+      "checksum": "a7803a687b329c30674b2db40339a77e"
     },
     "_book/site_libs/quarto-html/anchor.min.js": {
       "checksum": "91bcf6cd1fd88fec3f109811e5fc3546"
@@ -57,11 +60,14 @@
     "_book/site_libs/quarto-html/popper.min.js": {
       "checksum": "3a4a291ccf3f1ea0f82b641542fd3827"
     },
+    "_book/site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css": {
+      "checksum": "549806ee2085284f45b00abea8c6df48"
+    },
     "_book/site_libs/quarto-html/quarto-syntax-highlighting.css": {
       "checksum": "ab2b9e94a89b131e869fd951d6355545"
     },
     "_book/site_libs/quarto-html/quarto.js": {
-      "checksum": "7563d37e31580c9573af5b12aa3779a2"
+      "checksum": "b2cce65711e74956eb7b7aa2f4d3943f"
     },
     "_book/site_libs/quarto-html/tippy.css": {
       "checksum": "ebd6f8ce46a677e1a4f5f8a8317109a9"
@@ -85,7 +91,7 @@
       "checksum": "bb16b7e73be13eba97c99d25b2a476b3"
     },
     "_book/summary.html": {
-      "checksum": "e2f77393f341fffae70f784256200959"
+      "checksum": "da1bc0b3855b798b32bfe04df30eba02"
     },
     "_quarto.yml": {
       "checksum": "0e855c04a34adc1e902126c2a3b56cae"
@@ -106,7 +112,7 @@
       "checksum": "20d3273ad995f344fa1d144ca5d3ecf1"
     },
     "summary.qmd": {
-      "checksum": "241b3a0d102525bc104b41c7799346dd"
+      "checksum": "fae1ece96d84239b81918673439e1e7d"
     }
   },
   "users": null
