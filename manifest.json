@@ -25,7 +25,7 @@
       "checksum": "9b8e47662e0b99101f8caa21b21f001f"
     },
     "_book/search.json": {
-      "checksum": "6fb9c68f33c7abafec2aae7adb337ba1"
+      "checksum": "9432cffbf85aebd3d7236888f059e89a"
     },
     "_book/site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css": {
       "checksum": "8da5b4427184b79ecddefad3d342027e"
@@ -91,7 +91,7 @@
       "checksum": "bb16b7e73be13eba97c99d25b2a476b3"
     },
     "_book/summary.html": {
-      "checksum": "da1bc0b3855b798b32bfe04df30eba02"
+      "checksum": "ea265196b7851fa6babfdb6980677df1"
     },
     "_quarto.yml": {
       "checksum": "0e855c04a34adc1e902126c2a3b56cae"
@@ -112,7 +112,7 @@
       "checksum": "20d3273ad995f344fa1d144ca5d3ecf1"
     },
     "summary.qmd": {
-      "checksum": "fae1ece96d84239b81918673439e1e7d"
+      "checksum": "171a9ba38358b36a456239c09043e49e"
     }
   },
   "users": null
