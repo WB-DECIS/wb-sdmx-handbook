@@ -5,22 +5,27 @@ In summary, this book has no content whatsoever.
 Here an example of a mermaid diagram
 
 ```{mermaid}
-%%| label: fig-mermaid
-%%| fig-width: 6
-%%| fig-cap: |
-%%|   How Quarto orchestrates rendering of documents: start with
-%%|   a qmd file, use the Knitr or Jupyter engine to perform the
-%%|   computations and convert it to an md file, then use Pandoc
-%%|   to convert to various file formats including HTML, PDF,
-%%|   and Word.
-flowchart LR
-  A[qmd] --> B(Knitr)
-  A[qmd] --> C(Jupyter)
-  B(Knitr) --> D[md]
-  C(Jupyter) --> D[md]
-  D[md] --> E(pandoc)
-  E(pandoc) --> F(HTML)
-  E(pandoc) --> G(PDF)
-  E(pandoc) --> H(Word)
-  E(pandoc) --> I{and more}
+graph TD
+    %% Manually Maintained Elements
+    A["📄 mapping_file"]:::manual
+    B["📄 parameters_file"]:::manual
+
+    %% Standard Functions
+    C["🟢 fetch_raw_data()"]:::standard
+    D["🟢 read_mappings()"]:::standard
+    E["🟢 standardize_sdmx()"]:::standard
+
+    %% Flow Connections
+    A --> D
+    B --> E
+    C --> E
+    D --> E
+
+    %% Styles for differentiation
+    classDef standard fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff;
+    classDef manual fill:#FF9800,stroke:#E65100,stroke-width:2px,color:#fff;
+
+    %% Apply styles
+    class A,B manual;
+    class C,D,E standard;
 ```

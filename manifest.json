@@ -4,7 +4,7 @@
   "platform": "4.4.2",
   "metadata": {
     "appmode": "quarto-static",
-    "primary_rmd": "./index.qmd",
+    "primary_rmd": "index.qmd",
     "primary_html": null,
     "content_category": null,
     "has_parameters": false
@@ -19,13 +19,13 @@
       "checksum": "dc8f902deb28880ccf0e802902e81236"
     },
     "_book/intro.html": {
-      "checksum": "ff666f04e1607c2b4813a3d6552993c4"
+      "checksum": "eb79d9a9331f420dc62a6dea4124e5ae"
     },
     "_book/references.html": {
       "checksum": "9b8e47662e0b99101f8caa21b21f001f"
     },
     "_book/search.json": {
-      "checksum": "9432cffbf85aebd3d7236888f059e89a"
+      "checksum": "f4a75a956e664a39dbf1367348bccbd7"
     },
     "_book/site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css": {
       "checksum": "8da5b4427184b79ecddefad3d342027e"
@@ -91,7 +91,7 @@
       "checksum": "bb16b7e73be13eba97c99d25b2a476b3"
     },
     "_book/summary.html": {
-      "checksum": "ea265196b7851fa6babfdb6980677df1"
+      "checksum": "e8d72c5ae76ab7f93ed8e90e53de3331"
     },
     "_quarto.yml": {
       "checksum": "810ae47f7b0e41859c769985e09f0ee1"
@@ -112,7 +112,7 @@
       "checksum": "20d3273ad995f344fa1d144ca5d3ecf1"
     },
     "summary.qmd": {
-      "checksum": "cddc3242cf029cc0fb534e7a289c5679"
+      "checksum": "9bfd00973062420d4524b52e7a4c753b"
     }
   },
   "users": null
