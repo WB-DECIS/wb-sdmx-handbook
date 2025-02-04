@@ -15,8 +15,29 @@
   },
   "packages": null,
   "files": {
+    "_book/00-the-whole-game.html": {
+      "checksum": "a6e69ccacfaf740ddf3980f4eb21e2fa"
+    },
+    "_book/docs/pics/matrix-gen-1.png": {
+      "checksum": "f6ce2b40d377d4e35f3d6285bc94cdfe"
+    },
+    "_book/docs/pics/matrix-gen-2.png": {
+      "checksum": "5fc0dbd4a4d5218bddd34e9454113480"
+    },
+    "_book/docs/pics/matrix-gen-3.png": {
+      "checksum": "f7e8eba9763e1655464e12e8408393f1"
+    },
+    "_book/docs/pics/matrix-gen-4.png": {
+      "checksum": "a2e52ac6f761e965e8bc789e38655b38"
+    },
+    "_book/docs/pics/matrix-gen-5.png": {
+      "checksum": "30fa8fb0c3a02fc66ff13d417fa502f6"
+    },
+    "_book/docs/pics/matrix-gen-6.png": {
+      "checksum": "f5b9d4445ae6756874c634a3281bac75"
+    },
     "_book/index.html": {
-      "checksum": "dc8f902deb28880ccf0e802902e81236"
+      "checksum": "0f041bef3b284c58fb2783e4e28e5c44"
     },
     "_book/intro.html": {
       "checksum": "eb79d9a9331f420dc62a6dea4124e5ae"
@@ -25,7 +46,7 @@
       "checksum": "9b8e47662e0b99101f8caa21b21f001f"
     },
     "_book/search.json": {
-      "checksum": "f4a75a956e664a39dbf1367348bccbd7"
+      "checksum": "bb94c0e72d28396a0ed5db580c67d2fd"
     },
     "_book/site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css": {
       "checksum": "8da5b4427184b79ecddefad3d342027e"
@@ -94,10 +115,64 @@
       "checksum": "e8d72c5ae76ab7f93ed8e90e53de3331"
     },
     "_quarto.yml": {
-      "checksum": "810ae47f7b0e41859c769985e09f0ee1"
+      "checksum": "d17b6602eb30cd38a46e3ee5e816b98d"
+    },
+    "00-how-to-create-a-dataflow.qmd": {
+      "checksum": "773c4017ff556ed324a5a9fd9bc4a8e3"
+    },
+    "00-the-whole-game.qmd": {
+      "checksum": "f09f710c9569ab44f3be1de9b1e81d41"
     },
     "cover.png": {
       "checksum": "308012df3fa962ae61c7114806331a72"
+    },
+    "docs/Generic_DSD_Matrix_SDMXML_generator_1.3.2.xlsm": {
+      "checksum": "76fc3939c0d55d372cd2bd9733751658"
+    },
+    "docs/pics/dotstat-structure-1.png": {
+      "checksum": "2269f23f5ea66e3bc649ebf6c9cf259f"
+    },
+    "docs/pics/fmr-bulk-1.png": {
+      "checksum": "a76b92b93f1a92cf57e84013f2187efe"
+    },
+    "docs/pics/fmr-bulk-2.png": {
+      "checksum": "7d0cbe30e220b30b24f80a3c7e165878"
+    },
+    "docs/pics/fmr-codelists-1.png": {
+      "checksum": "349299d1b9a73ffcb9c110b2541f3e56"
+    },
+    "docs/pics/matrix-gen-1.png": {
+      "checksum": "f6ce2b40d377d4e35f3d6285bc94cdfe"
+    },
+    "docs/pics/matrix-gen-2.png": {
+      "checksum": "5fc0dbd4a4d5218bddd34e9454113480"
+    },
+    "docs/pics/matrix-gen-3.png": {
+      "checksum": "f7e8eba9763e1655464e12e8408393f1"
+    },
+    "docs/pics/matrix-gen-4.png": {
+      "checksum": "a2e52ac6f761e965e8bc789e38655b38"
+    },
+    "docs/pics/matrix-gen-5.png": {
+      "checksum": "30fa8fb0c3a02fc66ff13d417fa502f6"
+    },
+    "docs/pics/matrix-gen-6.png": {
+      "checksum": "f5b9d4445ae6756874c634a3281bac75"
+    },
+    "docs/pics/matrix-gen-7.png": {
+      "checksum": "4408611bf9d6498e909b23603b3fd9b6"
+    },
+    "docs/pics/matrix-gen-concepts-1.png": {
+      "checksum": "d88a9d9ff8be1b048da859789cec3a2a"
+    },
+    "docs/sdmx-test_Constraints.xml": {
+      "checksum": "b76a52a5b34eb8672fe35e8b6a69a52c"
+    },
+    "docs/sdmx-test_DFs.xml": {
+      "checksum": "9924491aa07e68c53985e8c898dfb0df"
+    },
+    "docs/sdmx-test_DSDs.xml": {
+      "checksum": "020ff469072353617146f724dbbf5c43"
     },
     "index.qmd": {
       "checksum": "87ba4294d4be2d217fcab8d62d711f22"
