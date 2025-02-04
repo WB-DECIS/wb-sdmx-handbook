@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - 00-the-whole-game.qmd
     - summary.qmd
     - references.qmd
 

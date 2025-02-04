@@ -1,0 +1,191 @@
+# The whole game
+
+## High-Level Steps to Convert a Non-SDMX Source Dataset and Disseminate it in .Stat Suite
+
+1. **Fetch the source dataset**  
+   Retrieve the non-SDMX data from its original source, ensuring it is complete and up to date.  
+2. **Create DSD**  
+   If a Data Structure Definition (DSD) for your dataset does not exist, it will
+   need to be created. A DSD in SDMX is essentially a blueprint for your dataset. 
+   It defines what data elements exist, explains their meaning, and organizes 
+   how the data is structured. In other words, it tells you what the pieces of 
+   your data are and how they fit together.
+   
+```{mermaid}
+graph TD
+    A[DSD]-- is a collection of --> B[Concepts]
+    B -- can be --> C[Dimensions]
+    B -- can be --> D[Measures]
+    B -- can be --> E[Attributes]
+
+    %% Dimensions branch: check if coded
+    C --> F{Coded?}
+    F -- Yes --> G[Codelist]
+
+    %% Attributes branch: check if coded
+    E --> F
+    
+    %% Measures are typically numeric and uncoded (no codelist connection)
+    D --> F
+```
+   
+
+3. **Create the dataset in .Stat Suite**  
+   Initialise the dataset in .Stat Suite by uploading the structures created in 
+   the previous step.
+
+4. **Define a dataflow(s)**  
+   A dataflow is a slice of data stored in a given DSD. It is possible to define
+   dataflows directly in step 2, but since dataflows can be added independently,
+   it is described here as a separate step. The dataflow will specify how the 
+   dataset is accessed and used within the .Stat Suite. 
+
+5. **Create dataflow(s) in .Stat Suite**  
+   Upload the create dataflow(s) definition in .Stat Suite
+
+6. **Transform the data to align with the model**  
+   Convert the source data to match the defined SDMX structures, ensuring proper 
+   mapping of SMX artefact IDs, concepts, and codelists.  
+
+7. **Upload the formatted data to .Stat Suite**  
+   Ingest the transformed dataset into .Stat Suite for validation, processing, and dissemination.  
+
+
+Here is the same information as a flowchart:
+
+```{mermaid}
+flowchart TD
+    A["Fetch the source dataset"]
+    B{"Does a DSD already exist?"}
+    C["Create DSD"]
+    D["Create the dataset in .Stat Suite"]
+    D2{"Are dataflows already defined?"}
+    E["Define dataflows"]
+    E2[Create dataflows in .Stat Suite]
+    F["Transform the source data"]
+    G["Upload the formatted data to .Stat Suite"]
+
+    A --> B
+    B -- "No" --> C
+    C --> D
+    B -- "Yes" --> D
+    D --> D2
+    D2 -- "No" --> E
+    D2 -- "Yes" --> E2
+    E --> E2
+    E2 --> F
+    F --> G
+
+    %% Assign classes to nodes
+    class A,C,D,E,E2,F,G action;
+    class B,D2 conditional;
+
+    %% Define styles for each class
+    classDef action fill:#e1f5fe,stroke:#039be5,stroke-width:2px;
+    classDef conditional fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,font-weight:bold;
+```
+
+## Create a Data Structure Definition (DSD) using the SDMX Matrix Generator
+
+The **SDMX Matrix Generator** is a tool designed to simplify the creation of a **Data Structure Definition (DSD)** by allowing users to define SDMX structures using an Excel-based template. This section provides a high-level step-by-step guide to generating a 
+DSD with this tool. For more detailed instructions on how to use the SDMX Matrix
+Generator, please refer to this [free online course](https://academy.siscc.org/courses/an-introduction-to-sdmx-structural-modelling-for-data-producers/)
+
+### Step 1: Download and Open the Template
+
+1. Go to the **SDMX Matrix Generator** repository:  
+   [SDMX Matrix Generator](https://gitlab.com/sis-cc/sdmx-tools/sdmx-matrix-generator)
+2. Download the **Excel template** provided in the repository.
+
+### Step 2: Configure your the Matrix Generator
+1. Configure the Excel template. This template contains macros, which will be blocked 
+by your World Bank laptop security settings by default. In order to enable the macros
+[please follow these steps](https://support.microsoft.com/en-us/topic/a-potentially-dangerous-macro-has-been-blocked-0952faa0-37e7-4316-b61d-5b5ed6024216)
+2. Open the Excel file and navigate to the `Generate` sheet. This sheet contains
+important information that will need to be confirgured for the Matrix Generator to 
+work correctly  
+
+  - `Configuration 1`: Turn off codelist generation by setting cell `A5` to 0.
+  We turn off the codelist generation because we will use the codelists managed 
+  in [FMR](https://fmr.worldbank.org/FMR) instead. (This needs to be turned on 
+  for organization that don't have FMR, and for which the codelists are defined 
+  directly in the Excel sheet)
+  ![codelist screenshot](./docs/pics/matrix-gen-1.png)  
+  
+  - `Configuration 2`: Set a valid path for the output folder where the newly created
+  SDMX artefacts will be saved.
+  ![Output folder screenshot](./docs/pics/matrix-gen-2.png) 
+  
+  - `Configuration 3`: Set cell `F7` to 1 to ensure each SDMX artefact is created
+  as an independent file. This is not mandatory, but easier for troubleshooting
+  if problems arise.
+  ![Separate files](./docs/pics/matrix-gen-3.png)  
+  
+  - `Configuration 4`: Customize your output files prefix. Also an optional steps, 
+  but allows you to generate friendlier output files. 
+  ![Prefix](./docs/pics/matrix-gen-4.png)  
+  - `Configuration 5`: Very important steps. You need to specify a valid path to
+  the app that will be used to open the created `.xml` files. Any app that can open
+  `.xml` files will do (Chrome,notepad, notepad++, etc.), but the path on your laptop
+  must be correct.
+  ![XML app](./docs/pics/matrix-gen-5.png)  
+  
+  - `Configuration 6`: Specify a valid path to the logs file. The path must include
+  the actual file name and its extension (for instance `logs.txt`). This file does 
+  not have to exist.
+  ![logs](./docs/pics/matrix-gen-6.png)  
+
+
+### Step 2: Define the DSD Components in the Excel File
+
+The template contains different sheets where you specify the components of the DSD:
+
+**Concepts Sheet**
+- `Define the Concepts` that will be used in your DSD. Specify the **Concept ID**, 
+name, description, and whether they are used as dimensions, attributes, or measures.
+- `Define the Codelists` associated with coded concepts. Each codelist is referenced
+with an ID of the following form: `{agencyID}:{codelistIS}({version})`, for instance,
+`WB:CL_AREA(1.0)`.
+
+![concepts](./docs/pics/matrix-gen-concepts-1.png)
+All existing codelists are available in [FMR](https://fmr.worldbank.org/FMR/items/codelist.html). The screenshot below 
+shows how you can access codelists and their unique IDs (highlighted in yellow)
+![FMR codelists](./docs/pics/fmr-codelists-1.png)
+
+### Step 3: Generate the SDMX-ML DSD Files
+
+At this stage, you already have defined the basic components of a DSD, and can 
+generate the corresponding `.xml` files for upload into .Stat.
+
+1. Save the Excel file with your DSD specifications.
+2. Use the **Generate SDMX Artefacts** button from the `Generate` sheet to intiate
+the creation of `.xml` files that will define your DSD. 
+![artefacts](./docs/pics/matrix-gen-7.png)
+
+### Step 4: Download the codelists from FMR
+
+Because we have only references the FMR codelists to be used, these codelists, if 
+they do not yet exist in .Stat, will need to be downloaded from FMR and uploaded 
+into .Stat. The easiest way to download all the codelists that you need is to go
+to go [FMR Bulk Actions page](https://fmr.worldbank.org/FMR/bulk-action.html), 
+select all the codelists that are required for your DSD, and click the download 
+button. The version of SDMX that we currently use is `v2.1`, so please select 
+this SDMX version when prompted to select an SDMX version.
+
+![Bulk-1](./docs/pics/fmr-bulk-1.png)
+
+![Bulk-2](./docs/pics/fmr-bulk-2.png)
+## Create the DSD in .Stat Suite
+
+Now that we have the basic SDMX artefacts defining our DSD, we can upload them 
+in .Stat to create a dedicated dataset container ready to receive data. 
+
+To create it, simply:  
+- Navigate to The [.Stat Data Licecycle Manager](https://dlmqa.worldbank.org/)  
+- Select **Upload structures**  
+- Add the SDMX artefacts to be uploaded in the **files** section
+- Select the **data space** where the structures will be uploaded (For now, let's 
+only use the **data collection** space)  
+- click the **upload** button
+
+![dotstat structure](./docs/pics/dotstat-structure-1.png)
