@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:Structure xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message" xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"><message:Header>
+        <message:ID>IDREF3</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2021-11-23T20:04:44.1785484+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures><structure:Concepts><structure:ConceptScheme id="CS_MSD_SNA_TABLE1" agencyID="OECD" version="1.0" isExternalReference="false" isFinal="true">
+                <common:Name xml:lang="en">Concepts for MSD SNA_TABLE1</common:Name>
+                <common:Name xml:lang="fr">Concepts pour MSD SNA_TABLE1</common:Name>
+                <structure:Concept id="CONTACT_PERSON_ORGANISATION">
+                    <common:Name xml:lang="en">Contact person/organisation</common:Name>
+                    <common:Name xml:lang="fr">Personne/organisation de contact</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="XHTML" isMultiLingual="true" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="UNIT_OF_MEASURE_USED">
+                    <common:Name xml:lang="en">Unit of measure used</common:Name>
+                    <common:Name xml:lang="fr">Unité de mesure utilisée</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="String" isMultiLingual="true" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="POWER_CODE">
+                    <common:Name xml:lang="en">Power code</common:Name>
+                    <common:Name xml:lang="fr">Code puissance</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:Enumeration>
+                            <Ref id="CL_SNA_TABLE1__UNIT_MULT" version="1.0" agencyID="OECD" package="codelist" class="Codelist" />
+                        </structure:Enumeration>
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="REFERENCE_PERIOD">
+                    <common:Name xml:lang="en">Reference period</common:Name>
+                    <common:Name xml:lang="fr">Période de référence</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="String" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="DIRECT_SOURCE">
+                    <common:Name xml:lang="en">Direct source</common:Name>
+                    <common:Name xml:lang="fr">Source directe</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="XHTML" isMultiLingual="true" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="STATISTICAL_POPULATION">
+                    <common:Name xml:lang="en">Statistical population</common:Name>
+                    <common:Name xml:lang="fr">Population statistique</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="XHTML" isMultiLingual="true" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="KEY_STATISTICAL_CONCEPT">
+                    <common:Name xml:lang="en">Key statistical concept</common:Name>
+                    <common:Name xml:lang="fr">Concept statistique principal</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="XHTML" isMultiLingual="true" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+                <structure:Concept id="OTHER_COMMENTS">
+                    <common:Name xml:lang="en">Other comments</common:Name>
+                    <common:Name xml:lang="fr">Autres commentaires</common:Name>
+                    <structure:CoreRepresentation>
+                        <structure:TextFormat textType="XHTML" isMultiLingual="true" />
+                    </structure:CoreRepresentation>
+                </structure:Concept>
+            </structure:ConceptScheme>
+        </structure:Concepts></message:Structures></message:Structure>

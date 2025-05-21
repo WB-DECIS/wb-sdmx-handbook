@@ -1,0 +1,1687 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:Structure xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message" xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"><message:Header>
+        <message:ID>IDREF3</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2021-11-23T20:04:44.1785484+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures><structure:Codelists><structure:Codelist id="CL_SNA_TABLE1__TRANSACT" agencyID="OECD" version="1.0" isExternalReference="false" isFinal="true">
+                <common:Name xml:lang="en">Transaction</common:Name>
+                <common:Name xml:lang="fr">Transaction</common:Name>
+                <structure:Code id="B1_GA">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross domestic product (output approach)</common:Name>
+                    <common:Name xml:lang="fr">Produit intérieur brut (par la production)</common:Name>
+                    <structure:Parent>
+                        <Ref id="GDP" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="GDP">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">1--Gross domestic product</common:Name>
+                    <common:Name xml:lang="fr">1--Produit intérieur brut</common:Name>
+                </structure:Code>
+                <structure:Code id="B1G_P119">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross value added at basic prices, excluding FISIM</common:Name>
+                    <common:Name xml:lang="fr">Valeur ajoutée brute aux prix de base, à l'exclusion des SIFIM</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GA" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P3_P5">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Domestic demand</common:Name>
+                    <common:Name xml:lang="fr">Demande intérieure</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GE" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1_GE">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross domestic product (expenditure approach)</common:Name>
+                    <common:Name xml:lang="fr">Produit intérieur brut (par les dépenses)</common:Name>
+                    <structure:Parent>
+                        <Ref id="GDP" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Compensation of employees</common:Name>
+                    <common:Name xml:lang="fr">Rémunération des salariés</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GI" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1_GI">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross domestic product (income approach)</common:Name>
+                    <common:Name xml:lang="fr">Produit intérieur brut (par les revenus)</common:Name>
+                    <structure:Parent>
+                        <Ref id="GDP" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P6">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Exports of goods and services</common:Name>
+                    <common:Name xml:lang="fr">Exportations de biens et de services</common:Name>
+                    <structure:Parent>
+                        <Ref id="B11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B11">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">External balance of goods and services</common:Name>
+                    <common:Name xml:lang="fr">Solde des échanges extérieurs de biens et de services</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GE" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1A_B">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, hunting and forestry; fishing (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, chasse et sylviculture; pêche (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GA_B">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, hunting and forestry; fishing (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, chasse et sylviculture; pêche (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1G">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross value added at basic prices, total activity</common:Name>
+                    <common:Name xml:lang="fr">Valeur ajoutée brute aux prix de base, total</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G_P119" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11A_B">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, hunting and forestry; fishing (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, chasse et sylviculture; pêche (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">17</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Wages and salaries</common:Name>
+                    <common:Name xml:lang="fr">Salaires et traitements bruts</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D21S1">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Taxes on products</common:Name>
+                    <common:Name xml:lang="fr">Impôts sur les produits</common:Name>
+                    <structure:Parent>
+                        <Ref id="D21_D31" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D21_D31">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Taxes less subsidies on products</common:Name>
+                    <common:Name xml:lang="fr">Impôts moins subventions sur les produits</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GA" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P31S14_S15">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Households and Non-profit institutions serving households</common:Name>
+                    <common:Name xml:lang="fr">Ménages et ISBL au service des ménages</common:Name>
+                    <structure:Parent>
+                        <Ref id="P3" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P3">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Final consumption expenditure</common:Name>
+                    <common:Name xml:lang="fr">Dépense de consommation finale</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GE" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D2S1">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Taxes on production and imports</common:Name>
+                    <common:Name xml:lang="fr">Impôts sur la production et les importations</common:Name>
+                    <structure:Parent>
+                        <Ref id="D2_D3" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D2_D3">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Taxes less subsidies on production and imports</common:Name>
+                    <common:Name xml:lang="fr">Impôts moins subventions sur la production et les importations</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GI" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross fixed capital formation</common:Name>
+                    <common:Name xml:lang="fr">Formation brute de capital fixe</common:Name>
+                    <structure:Parent>
+                        <Ref id="P5" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P5">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross capital formation</common:Name>
+                    <common:Name xml:lang="fr">Formation brute de capital</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GE" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1D">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1C_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1C_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris l'énergie (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1VB_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VB_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">8</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris énergie (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P31S14">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Final consumption expenditure of households</common:Name>
+                    <common:Name xml:lang="fr">Dépense de consommation finale des ménages</common:Name>
+                    <structure:Parent>
+                        <Ref id="P31S14_S15" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P31S13">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Individual consumption expenditure of general government</common:Name>
+                    <common:Name xml:lang="fr">Dépense de consommation individuelle des administrations publiques</common:Name>
+                    <structure:Parent>
+                        <Ref id="P3S13" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P3S13">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Final consumption expenditure of general government</common:Name>
+                    <common:Name xml:lang="fr">Dépense de consommation finale des administrations publiques</common:Name>
+                    <structure:Parent>
+                        <Ref id="P3" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51PI61">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Products of agriculture, forestry, fisheries and aquaculture</common:Name>
+                    <common:Name xml:lang="fr">Produits de l'agriculture, de la sylviculture et de la pêche</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GD">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1GC_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GC_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris l'énergie (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1GVB_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVB_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">8</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris énergie (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11D">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11C_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11C_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris l'énergie (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11VB_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VB_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">8</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris énergie (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VA">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, forestry and fishing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, sylviculture et pêche (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">18</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Employers' social contributions</common:Name>
+                    <common:Name xml:lang="fr">Cotisations sociales à la charge des employeurs</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P52">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Changes in inventories</common:Name>
+                    <common:Name xml:lang="fr">Variation des stocks</common:Name>
+                    <structure:Parent>
+                        <Ref id="P52_P53" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P52_P53">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Changes in inventories and acquisitions less disposals of valuables</common:Name>
+                    <common:Name xml:lang="fr">Variation des stocks et acquisitions moins cessions d'objets de valeur</common:Name>
+                    <structure:Parent>
+                        <Ref id="P5" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P61">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Exports of goods</common:Name>
+                    <common:Name xml:lang="fr">Exportations de biens</common:Name>
+                    <structure:Parent>
+                        <Ref id="P6" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P71">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Imports of goods</common:Name>
+                    <common:Name xml:lang="fr">Importations de biens</common:Name>
+                    <structure:Parent>
+                        <Ref id="P7" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P7">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Imports of goods and services</common:Name>
+                    <common:Name xml:lang="fr">Importations de biens et de services</common:Name>
+                    <structure:Parent>
+                        <Ref id="B11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Manufacturing (ISIC rev 4)</common:Name>
+                    <common:Name xml:lang="fr">Dont : Industrie manufacturière (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12VB_E" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VB_E">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Industry, including energy (ISIC rev 4)</common:Name>
+                    <common:Name xml:lang="fr">Industrie, y compris énergie (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N11131">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Transport equipment</common:Name>
+                    <common:Name xml:lang="fr">Matériels de transport</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1113" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1113">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">9</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Machinery and equipment and weapon system</common:Name>
+                    <common:Name xml:lang="fr">Machines et équipements et systèmes d'armes</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N11132">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross domestic product (expenditure approach) / Gross fixed capital formation / Machinery and equipment and weapon system / Other machinery and equipment, SNA93</common:Name>
+                    <common:Name xml:lang="fr">Produit intérieur brut (par les dépenses) / Formation brute de capital fixe / Machines et équipements et systèmes d'armes / Autres machines et équipements, SCN93</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1113" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P72">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Imports of services</common:Name>
+                    <common:Name xml:lang="fr">Importations de services</common:Name>
+                    <structure:Parent>
+                        <Ref id="P7" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P62">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Exports of services</common:Name>
+                    <common:Name xml:lang="fr">Exportations de services</common:Name>
+                    <structure:Parent>
+                        <Ref id="P6" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P53">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Acquisitions less disposals of valuables</common:Name>
+                    <common:Name xml:lang="fr">Acquisitions moins cessions d'objets de valeur</common:Name>
+                    <structure:Parent>
+                        <Ref id="P52_P53" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51PI62">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Metal products and machinery</common:Name>
+                    <common:Name xml:lang="fr">Produits en métaux et machines</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P32S13">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Collective consumption expenditure of general government</common:Name>
+                    <common:Name xml:lang="fr">Dépense de consommation collective des administrations publiques</common:Name>
+                    <structure:Parent>
+                        <Ref id="P3S13" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P31S15">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Final consumption expenditure of non-profit institutions serving households</common:Name>
+                    <common:Name xml:lang="fr">Dépense de consommation finale des ISBL au service des ménages</common:Name>
+                    <structure:Parent>
+                        <Ref id="P31S14_S15" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D31S1">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Subsidies on products</common:Name>
+                    <common:Name xml:lang="fr">Subventions sur les produits</common:Name>
+                    <structure:Parent>
+                        <Ref id="D21_D31" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B2G_B3G">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Gross operating surplus and gross mixed income</common:Name>
+                    <common:Name xml:lang="fr">Excédent brut d'exploitation et revenu mixte brut</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GI" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D3S1">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Subsidies on production and imports</common:Name>
+                    <common:Name xml:lang="fr">Subventions sur la production et les importations</common:Name>
+                    <structure:Parent>
+                        <Ref id="D2_D3" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P119">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">FISIM (Financial Intermediation Services Indirectly Measured)</common:Name>
+                    <common:Name xml:lang="fr">SIFIM (Services d'Intermédiation Financière Indirectement Mesurés)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G_P119" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="DB1_GA">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Statistical discrepancy</common:Name>
+                    <common:Name xml:lang="fr">Divergence statistique</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GA" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1F">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GF">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11F">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P41">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">of which: Actual individual consumption</common:Name>
+                    <common:Name xml:lang="fr">dont : Consommation individuelle effective</common:Name>
+                    <structure:Parent>
+                        <Ref id="P3" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51PI63">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Transport equipment</common:Name>
+                    <common:Name xml:lang="fr">Matériel de transport</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VF">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1113I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">ICT equipment, SNA08</common:Name>
+                    <common:Name xml:lang="fr">Equipements TIC, SNA08</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1113" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1113O">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other machinery and equipment and weapon system, SNA08</common:Name>
+                    <common:Name xml:lang="fr">Autres machines et équipements et systèmes d'armes, SCN08</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1113" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VG_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Distributive trade, repairs; transport; accommod., food serv. (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Commerce, réparations; transports; hébergement et restauration (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51PI64">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Housing</common:Name>
+                    <common:Name xml:lang="fr">Logement</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11G_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Wholesale and retail trade, repairs; hotels &amp; rest.; transport (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Commerce gros &amp; détail, réparations; hôtels &amp; rest.; transports (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GG_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Wholesale and retail trade, repairs; hotels &amp; rest.; transport (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Commerce gros &amp; détail, réparations; hôtels &amp; rest.; transports (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1G_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Wholesale and retail trade, repairs; hotels &amp; rest.; transport (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Commerce gros &amp; détail, réparations; hôtels &amp; rest.; transports (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="DB1_GI">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Statistical discrepancy</common:Name>
+                    <common:Name xml:lang="fr">Divergence statistique</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GI" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="DB1_GE">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Statistical discrepancy</common:Name>
+                    <common:Name xml:lang="fr">Divergence statistique</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1_GE" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1J_K">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Fin. intermediation; real estate, renting &amp; business activities (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Intermédiation fin.; immobilier, location &amp; serv. aux entreprises (CITI re</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GJ_K">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Fin. intermediation; real estate, renting &amp; business activities (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Intermédiation fin.; immobilier, location &amp; serv. aux entreprises (CITI re</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11J_K">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Fin. intermediation; real estate, renting &amp; business activities (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Intermédiation fin.; immobilier, location &amp; serv. aux entreprises (CITI re</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51PI65">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other constructions</common:Name>
+                    <common:Name xml:lang="fr">Autres constructions</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VJ">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Information and communication (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Information et communication (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VK">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">6</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Financial and insurance activities (ISIC rev 4)</common:Name>
+                    <common:Name xml:lang="fr">Activités financières et d'assurance (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51PI66">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">6</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other products</common:Name>
+                    <common:Name xml:lang="fr">Autres produits</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11L_P">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">6</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de service (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GL_P">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">6</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de service (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1L_P">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">6</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev3)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de service (CITI rev3)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VA">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">7</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, forestry and fishing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, sylviculture et pêche (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVA">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">7</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, forestry and fishing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, sylviculture et pêche (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VA">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">7</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Agriculture, forestry and fishing (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Agriculture, sylviculture et pêche (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1111">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">7</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Dwellings</common:Name>
+                    <common:Name xml:lang="fr">Logements</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VL">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">7</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Real estate activities (ISIC rev 4)</common:Name>
+                    <common:Name xml:lang="fr">Activités immobilières (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VM_N">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">8</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Prof., scientific, techn.; admin., support serv. activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités scientif. &amp; tech.; services admin. et de soutien (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1112">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">8</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other buildings and structures</common:Name>
+                    <common:Name xml:lang="fr">Autres bâtiments et ouvrages de génie civil</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VF">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">9</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVF">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">9</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VF">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">9</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Construction (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Construction (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VO_Q">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">9</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Public admin.; compulsory s.s.; education; human health (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Admin. publique, enseignement, santé humaine et action sociale (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D12VR_U">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">10</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de services (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D12" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1114">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">10</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Cultivated biological resources</common:Name>
+                    <common:Name xml:lang="fr">Ressources biologiques cultivées</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VG_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">10</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Distributive trade, repairs; transport; accommod., food serv. (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Commerce, réparations; transports; hébergement et restauration (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVG_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">10</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Distributive trade, repairs; transport; accommod., food serv. (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Commerce, réparations; transports; hébergement et restauration (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VG_I">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">10</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Distributive trade, repairs; transport; accommod., food serv. (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Commerce, réparations; transports; hébergement et restauration (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VJ">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">11</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Information and communication (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Information et communication (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVJ">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">11</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Information and communication (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Information et communication (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VJ">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">11</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Information and communication (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Information et communication (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N112">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">11</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Intellectual property product</common:Name>
+                    <common:Name xml:lang="fr">Droits de propriété intellectuelle</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VK">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">12</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Financial and insurance activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités financières et d'assurance (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVK">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">12</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Financial and insurance activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités financières et d'assurance (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VK">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">12</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Financial and insurance activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités financières et d'assurance (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VL">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">13</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Real estate activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités immobilières (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVL">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">13</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Real estate activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités immobilières (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VL">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">13</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Real estate activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités immobilières (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VM_N">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">14</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Prof., scientific, techn.; admin., support serv. activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités scientif., tech.; services admin. et de soutien (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVM_N">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">14</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Prof., scientific, techn.; admin., support serv. activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités scientif., tech.; services admin. et de soutien (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VM_N">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">14</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Prof., scientific, techn.; admin., support serv. activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Activités scientif., tech.; services admin. et de soutien (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VO_Q">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">15</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Public admin.; compulsory s.s.; education; human health (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Admin. publique, enseignement, santé humaine et action sociale (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVO_Q">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">15</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Public admin.; compulsory s.s.; education; human health (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Admin. publique, enseignement, santé humaine et action sociale (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VO_Q">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">15</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Public admin.; compulsory s.s.; education; human health (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Admin. publique, enseignement, santé humaine et action sociale (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D11VR_U">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">16</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de services (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D11" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="B1GVR_U">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">16</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de services (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="B1G" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="D1VR_U">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">16</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other service activities (ISIC rev4)</common:Name>
+                    <common:Name xml:lang="fr">Autres activités de services (CITI rev4)</common:Name>
+                    <structure:Parent>
+                        <Ref id="D1" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N111321">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Computer Hardware</common:Name>
+                    <common:Name xml:lang="fr">Matériel informatique</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1113I" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N111322">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Telecommunications equipment</common:Name>
+                    <common:Name xml:lang="fr">Equipement de télécommunication</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1113I" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1121">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Mineral exploration and evaluation</common:Name>
+                    <common:Name xml:lang="fr">Prospection minière et évaluation</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N112" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1122">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Computer software and databases</common:Name>
+                    <common:Name xml:lang="fr">Logiciels et bases de données</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N112" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N11221">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Computer software</common:Name>
+                    <common:Name xml:lang="fr">Logiciels</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N1122" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1123">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Entertainment, literary and artistic originals</common:Name>
+                    <common:Name xml:lang="fr">œuvres récréatives, littéraires ou artistiques originales</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N112" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1124">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Research and development</common:Name>
+                    <common:Name xml:lang="fr">Recherche et développement</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N112" />
+                    </structure:Parent>
+                </structure:Code>
+                <structure:Code id="P51N1129">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">0</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Other intellectual property products</common:Name>
+                    <common:Name xml:lang="fr">Autres droits de propriété intellectuelle</common:Name>
+                    <structure:Parent>
+                        <Ref id="P51N112" />
+                    </structure:Parent>
+                </structure:Code>
+            </structure:Codelist>
+            </structure:Codelists></message:Structures></message:Structure>

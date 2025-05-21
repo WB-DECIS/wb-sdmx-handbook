@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:Structure xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message" xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"><message:Header>
+        <message:ID>IDREF3</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2021-11-23T20:04:44.1785484+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures><structure:Codelists><structure:Codelist id="CL_SNA_TABLE1__MEASURE" agencyID="OECD" version="1.0" isExternalReference="false" isFinal="true">
+                <common:Name xml:lang="en">Measure</common:Name>
+                <common:Name xml:lang="fr">Mesure</common:Name>
+                <structure:Code id="C">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">1</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Current prices</common:Name>
+                    <common:Name xml:lang="fr">Prix courants</common:Name>
+                </structure:Code>
+                <structure:Code id="V">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">2</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Constant prices, national base year</common:Name>
+                    <common:Name xml:lang="fr">Prix constants, année de base nationale</common:Name>
+                </structure:Code>
+                <structure:Code id="VP">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">3</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Constant prices, previous year prices</common:Name>
+                    <common:Name xml:lang="fr">Prix constants, prix de l'année précédente</common:Name>
+                </structure:Code>
+                <structure:Code id="VOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">4</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Constant prices, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Prix constants, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="CXC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">5</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Current prices, current exchange rates</common:Name>
+                    <common:Name xml:lang="fr">Prix courants, taux de change courants</common:Name>
+                </structure:Code>
+                <structure:Code id="VXCOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">6</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Current prices, constant exchange rates, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Prix courants, taux de change constants, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="VXVOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">7</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Constant prices, constant exchange rates, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Prix constants, taux de change constants, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="XVP">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">8</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Previous year prices and previous year exchange rates</common:Name>
+                    <common:Name xml:lang="fr">Prix et taux de change de l'année précédente</common:Name>
+                </structure:Code>
+                <structure:Code id="CPC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">9</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Current prices, current PPPs</common:Name>
+                    <common:Name xml:lang="fr">Prix courants, PPA courantes</common:Name>
+                </structure:Code>
+                <structure:Code id="VPCOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">10</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Current prices, constant PPPs, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Prix courants, PPA constantes, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="VPVOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">11</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Constant prices, constant PPPs, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Prix constants, PPA constantes, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="PVP">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">12</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Previous year prices and previous year PPPs</common:Name>
+                    <common:Name xml:lang="fr">Prix et PPA de l'année précédente</common:Name>
+                </structure:Code>
+                <structure:Code id="HCXC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">13</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Per head, current prices, current exchange rates</common:Name>
+                    <common:Name xml:lang="fr">Par tête, prix courants, taux de change courants</common:Name>
+                </structure:Code>
+                <structure:Code id="HVXVOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">14</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Per head, constant prices, constant exchange rates, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Par tête, prix et taux de change constants, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="HCPC">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">15</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Per head, current prices, current PPPs</common:Name>
+                    <common:Name xml:lang="fr">Par tête, prix courants, PPA courantes</common:Name>
+                </structure:Code>
+                <structure:Code id="HVPVOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">16</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Per head, constant prices, constant PPPs, OECD base year</common:Name>
+                    <common:Name xml:lang="fr">Par tête, prix constants, PPA constantes, année de base OCDE</common:Name>
+                </structure:Code>
+                <structure:Code id="HCPIXOE">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">17</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Per head, index using current prices and current PPPs</common:Name>
+                    <common:Name xml:lang="fr">Par tête, indices utilisant les prix et PPA courantes</common:Name>
+                </structure:Code>
+                <structure:Code id="HVPIXOE">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">18</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Per head, index using the price levels and PPPs of 2010</common:Name>
+                    <common:Name xml:lang="fr">Par tête, indices utilisant les niveaux de prix et PPA de 2010</common:Name>
+                </structure:Code>
+                <structure:Code id="VIXOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">20</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Volume index</common:Name>
+                    <common:Name xml:lang="fr">Indices de volume</common:Name>
+                </structure:Code>
+                <structure:Code id="DOB">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">21</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Deflator</common:Name>
+                    <common:Name xml:lang="fr">Déflateur</common:Name>
+                </structure:Code>
+                <structure:Code id="G">
+                    <common:Annotations>
+                        <common:Annotation>
+                            <common:AnnotationType>ORDER</common:AnnotationType>
+                            <common:AnnotationText xml:lang="en">27</common:AnnotationText>
+                        </common:Annotation>
+                    </common:Annotations>
+                    <common:Name xml:lang="en">Growth rate</common:Name>
+                    <common:Name xml:lang="fr">Growth rate</common:Name>
+                </structure:Code>
+            </structure:Codelist>
+            </structure:Codelists></message:Structures></message:Structure>

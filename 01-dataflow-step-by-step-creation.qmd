@@ -1,0 +1,161 @@
+# Upload structures
+
+## Upload data structures
+
+### Upload concept scheme
+
+A Concept Scheme in SDMX is simply the “dictionary” of all the building-block concepts you’ll use in your data structure. It:
+
+-   Lists each concept by ID (e.g. LOCATION, MEASURE, TIME, OBS_VALUE),
+
+-   Gives it a human-readable name and description,
+
+-   Specifies how its values are represented (for example via a code list or a text format).
+
+For example, in the OECD SNA structure you’ll find a ConceptScheme with ID CS_SNA_TABLE1 that defines concepts like LOCATION (Country), MEASURE (type of flow), TIME (year) and OBS_VALUE (the observed value) .
+
+Uploading your Concept Scheme into .Stat Suite before the DSD is essential because your Data Structure Definition (DSD) refers to those concept IDs. Without the scheme loaded, the DSD can’t resolve what each concept means or how to validate its values. In fact, the SDMX DSD guidelines state that “a DSD requires a concept scheme and code lists that can be assigned to concepts. It defines the roles of the concepts and the value domains of the dimensions, attributes, and measures…, providing a ‘shared language’” for data exchange.
+
+[Download concept scheme](inputs/Concept_CS_SNA_TABLE1.xml)
+
+### Upload codelists
+
+A Codelist in SDMX is like an “approved list of values” for a concept that needs controlled vocabulary. It:
+
+-   Contains a set of codes (e.g. USA, FRA, DEU)
+
+-   Provides human-readable names (e.g. United States, France, Germany)
+
+-   Can include descriptions, hierarchy, or other metadata about each code
+
+For example, the concept LOCATION would use a codelist defining all valid countries or regions. The concept MEASURE might have codes like VAL (value), IDX (index), or PERCENT.
+
+Codelists are important in .Stat Suite because:
+
+-   The DSD refers to specific codelists to define what values are allowed for dimensions and attributes.
+
+-   Without uploading the codelists first, the DSD cannot validate or enforce which codes are acceptable for each concept.
+
+-   They ensure consistency and comparability across datasets using the same structure.
+
+So just like a concept scheme defines the what, codelists define the which values are allowed for those concepts. Both must be in place before a DSD can function correctly.
+
+[Download MEASURE code list](inputs/Codelist_CL_SNA_TABLE1__MEASURE.xml)
+[Download LOCATION code list](inputs/Codelist_CL_SNA_TABLE1__LOCATION.xml)
+[Download OBS_STATUS code list](inputs/Codelist_CL_SNA_TABLE1__OBS_STATUS.xml)
+[Download TRANSACT code list](inputs/Codelist_CL_SNA_TABLE1__TRANSACT.xml)
+[Download UNIT_MEASURE code list](inputs/Codelist_CL_SNA_TABLE1__UNIT_MEASURE.xml)
+[Download UNIT_MULT code list](inputs/Codelist_CL_SNA_TABLE1__UNIT_MULT.xml)
+
+### Upload DSD
+
+A **DSD** defines the **structure of a dataset**—like the blueprint or template that tells .Stat Suite *what kind of data to expect and how it’s organized*.
+
+Imagine you're designing a spreadsheet:\
+- The **DSD defines the columns** (e.g. `LOCATION`, `TIME`, `MEASURE`, `VALUE`)\
+- It specifies which columns are **dimensions** (used to slice the data), which are **attributes** (extra info), and which is the **observation** (the actual data value)
+
+------------------------------------------------------------------------
+
+Beyond the Concept Scheme and Codelists, the DSD provides:
+
+-   The **Concept Scheme** lists *what concepts exist* (e.g. `TIME`, `LOCATION`, `UNIT`)\
+-   The **Codelists** define *what values are allowed* for those concepts (e.g. `2022`, `USA`, `EUR`)\
+-   The **DSD pulls it all together**, telling .Stat Suite:
+    1.  Which **concepts** are used in the dataset\
+    2.  What **roles** they play (dimension, attribute, observation)\
+    3.  Which **codelist** (if any) each concept should use\
+    4.  How to **structure and validate** incoming data
+
+------------------------------------------------------------------------
+
+The DSD is important because:
+
+-   It ensures **data consistency and interoperability**—everyone using the DSD understands the dataset in the same way\
+-   It enables **automated validation**—invalid codes or missing required dimensions can be flagged automatically\
+-   It allows **.Stat Suite and SDMX tools** to interpret the data without manual configuration
+
+------------------------------------------------------------------------
+
+How do these structures relate to each other:
+
+Here’s the hierarchy:
+
+1.  **Codelists** define *valid values*
+2.  **Concept Scheme** defines *concepts and their meaning*
+3.  **DSD** defines *how those concepts and codelists come together to structure a dataset*
+
+In short:\
+- **Codelists** = vocabulary\
+- **Concept Scheme** = glossary\
+- **DSD** = dataset blueprint
+
+[Download DSD](inputs/DataStructure_DSD_SNA_TABLE1.xml)
+
+### Upload dataflow
+
+🔄 What is a Dataflow?
+
+A **Dataflow** in SDMX is like a **named doorway to a dataset**. It tells users (and systems) *what kind of data is available* and *how to understand it*.
+
+✅ What does a Dataflow do?
+
+-   It **points to a DSD** (Data Structure Definition), which defines the structure of the data\
+-   It provides a **unique ID and name** for the dataset (e.g. `SNA_TABLE1`)\
+-   It may include **descriptions** or annotations that explain what the dataset contains\
+-   It can be used to **identify and retrieve data** through SDMX web services or in .Stat Suite
+
+🧠 Why is it important?
+
+-   A dataflow gives **meaning and access** to structured data.\
+-   Without it, the DSD is just a template—**the dataflow makes it usable** by linking it to actual datasets.\
+-   It's also essential for **data discovery and integration**, because it acts like a reference label for data users.
+
+------------------------------------------------------------------------
+
+🧱 How does it relate to other SDMX structures?
+
+-   The **Dataflow** points to the **DSD**, saying:\
+    \> "This dataset follows this structure."\
+-   The **DSD** uses **Concept Schemes** and **Codelists** to define the dataset’s format.
+
+So in short:
+
+-   **Concepts** = what the data is about\
+-   **Codelists** = what values are allowed\
+-   **DSD** = how the data is structured\
+-   **Dataflow** = how you access the data
+
+[Download Dataflow](inputs/Dataflow_SNA_TABLE1.xml)
+
+## Upload metadata structures
+
+
+
+### Upload metadata concepts scheme
+
+[Download concept scheme for MSD](inputs/Concept_CS_MSD_SNA_TABLE1.xml)
+
+### Upload MSD
+
+[Download MSD](inputs/MetadataStructure_MSD_SNA_TABLE1.xml)
+
+### Upload Metadataflow
+
+Optional but preferred option.
+
+In .Stat, metatadata can be linked to a dataflow directly, without the need to having defined metadataflow. I don't fully understand why... Metadaflow should still be the preferred option as it is easier to maintained and manage.
+
+I am still failing to generate a valid metadaflow. Need to look at it a bit more. 
+
+[Download metadataflow](inputs/Metadataflow_MDF_SNA_TABLE1.xml)
+
+## Upload Data and Metadata
+
+### Upload Data
+
+[Download data](OECD_SNA_TABLE1_1.0_-_AUS_data.csv)
+
+### Upload Metadata
+
+[Download data](inputs/OECD_SNA_TABLE1_1.0_-_AUS_metadata.csv)

@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:Structure xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message" xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"><message:Header>
+        <message:ID>IDREF3</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2021-11-23T20:04:44.1785484+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures><structure:Codelists><structure:Codelist id="CL_SNA_TABLE1__UNIT_MULT" agencyID="OECD" version="1.0" isExternalReference="false" isFinal="true">
+                <common:Name xml:lang="en">Multiplier</common:Name>
+                <common:Name xml:lang="fr">Multiplier</common:Name>
+                <structure:Code id="-1">
+                    <common:Name xml:lang="en">Tenths</common:Name>
+                    <common:Name xml:lang="fr">Dixièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-10">
+                    <common:Name xml:lang="en">Ten-billionths</common:Name>
+                    <common:Name xml:lang="fr">Dix-milliardièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-11">
+                    <common:Name xml:lang="en">Hundred-billionths</common:Name>
+                    <common:Name xml:lang="fr">Cent-milliardièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-12">
+                    <common:Name xml:lang="en">Trillionths</common:Name>
+                    <common:Name xml:lang="fr">Trillionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-13">
+                    <common:Name xml:lang="en">Ten-trillionths</common:Name>
+                    <common:Name xml:lang="fr">Dix-trillionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-14">
+                    <common:Name xml:lang="en">Hundred-trillionths</common:Name>
+                    <common:Name xml:lang="fr">Cent-trillionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-15">
+                    <common:Name xml:lang="en">Quadrillionths</common:Name>
+                    <common:Name xml:lang="fr">Quadrillionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-2">
+                    <common:Name xml:lang="en">Hundredths</common:Name>
+                    <common:Name xml:lang="fr">Centièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-3">
+                    <common:Name xml:lang="en">Thousandths</common:Name>
+                    <common:Name xml:lang="fr">Millièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-4">
+                    <common:Name xml:lang="en">Ten-thousandths</common:Name>
+                    <common:Name xml:lang="fr">Dix-millièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-5">
+                    <common:Name xml:lang="en">Hundred-thousandths</common:Name>
+                    <common:Name xml:lang="fr">Cent-millièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-6">
+                    <common:Name xml:lang="en">Millionths</common:Name>
+                    <common:Name xml:lang="fr">Millionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-7">
+                    <common:Name xml:lang="en">Ten-millionths</common:Name>
+                    <common:Name xml:lang="fr">Dix-millionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-8">
+                    <common:Name xml:lang="en">Hundred-millionths</common:Name>
+                    <common:Name xml:lang="fr">Cent-millionièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="-9">
+                    <common:Name xml:lang="en">Billionths</common:Name>
+                    <common:Name xml:lang="fr">Milliardièmes</common:Name>
+                </structure:Code>
+                <structure:Code id="0">
+                    <common:Name xml:lang="en">Units</common:Name>
+                    <common:Name xml:lang="fr">Unités</common:Name>
+                </structure:Code>
+                <structure:Code id="1">
+                    <common:Name xml:lang="en">Tens</common:Name>
+                    <common:Name xml:lang="fr">Dizaines</common:Name>
+                </structure:Code>
+                <structure:Code id="10">
+                    <common:Name xml:lang="en">Tens of billions</common:Name>
+                    <common:Name xml:lang="fr">Dizaines de milliards</common:Name>
+                </structure:Code>
+                <structure:Code id="11">
+                    <common:Name xml:lang="en">Hundreds of billions</common:Name>
+                    <common:Name xml:lang="fr">Centaines de milliards</common:Name>
+                </structure:Code>
+                <structure:Code id="12">
+                    <common:Name xml:lang="en">Trillions</common:Name>
+                    <common:Name xml:lang="fr">Trillions</common:Name>
+                </structure:Code>
+                <structure:Code id="13">
+                    <common:Name xml:lang="en">Tens of trillions</common:Name>
+                    <common:Name xml:lang="fr">Dizaines de trillions</common:Name>
+                </structure:Code>
+                <structure:Code id="14">
+                    <common:Name xml:lang="en">Hundreds of trillions</common:Name>
+                    <common:Name xml:lang="fr">Centaines de trillions</common:Name>
+                </structure:Code>
+                <structure:Code id="15">
+                    <common:Name xml:lang="en">Quadrillions</common:Name>
+                    <common:Name xml:lang="fr">Quadrillions</common:Name>
+                </structure:Code>
+                <structure:Code id="2">
+                    <common:Name xml:lang="en">Hundreds</common:Name>
+                    <common:Name xml:lang="fr">Centaines</common:Name>
+                </structure:Code>
+                <structure:Code id="3">
+                    <common:Name xml:lang="en">Thousands</common:Name>
+                    <common:Name xml:lang="fr">Milliers</common:Name>
+                </structure:Code>
+                <structure:Code id="4">
+                    <common:Name xml:lang="en">Tens of thousands</common:Name>
+                    <common:Name xml:lang="fr">Dizaines de milliers</common:Name>
+                </structure:Code>
+                <structure:Code id="5">
+                    <common:Name xml:lang="en">Hundreds of thousands</common:Name>
+                    <common:Name xml:lang="fr">Centaines de milliers</common:Name>
+                </structure:Code>
+                <structure:Code id="6">
+                    <common:Name xml:lang="en">Millions</common:Name>
+                    <common:Name xml:lang="fr">Millions</common:Name>
+                </structure:Code>
+                <structure:Code id="7">
+                    <common:Name xml:lang="en">Tens of millions</common:Name>
+                    <common:Name xml:lang="fr">Dizaines de millions</common:Name>
+                </structure:Code>
+                <structure:Code id="8">
+                    <common:Name xml:lang="en">Hundreds of millions</common:Name>
+                    <common:Name xml:lang="fr">Centaines de millions</common:Name>
+                </structure:Code>
+                <structure:Code id="9">
+                    <common:Name xml:lang="en">Billions</common:Name>
+                    <common:Name xml:lang="fr">Milliards</common:Name>
+                </structure:Code>
+                <structure:Code id="9999">
+                    <common:Name xml:lang="en">.</common:Name>
+                    <common:Name xml:lang="fr">.</common:Name>
+                </structure:Code>
+            </structure:Codelist>
+        </structure:Codelists></message:Structures></message:Structure>

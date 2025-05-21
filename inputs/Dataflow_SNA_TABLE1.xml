@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:Structure xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message" xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"><message:Header>
+        <message:ID>IDREF3</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2021-11-23T20:04:44.1785484+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures><structure:Dataflows><structure:Dataflow id="SNA_TABLE1" agencyID="OECD" version="1.0" isExternalReference="false" isFinal="true">
+                <common:Name xml:lang="en">1. Gross domestic product (GDP)</common:Name>
+                <common:Name xml:lang="fr">1. Produit intérieur brut (PIB)</common:Name>
+                <structure:Structure>
+                    <Ref id="DSD_SNA_TABLE1" version="1.0" agencyID="OECD" package="datastructure" class="DataStructure" />
+                </structure:Structure>
+            </structure:Dataflow>
+        </structure:Dataflows></message:Structures></message:Structure>

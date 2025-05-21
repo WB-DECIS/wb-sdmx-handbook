@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<message:Structure xmlns:common="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/common" xmlns:message="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/message" xmlns:structure="http://www.sdmx.org/resources/sdmxml/schemas/v2_1/structure"><message:Header>
+        <message:ID>IDREF3</message:ID>
+        <message:Test>false</message:Test>
+        <message:Prepared>2021-11-23T20:04:44.1785484+01:00</message:Prepared>
+        <message:Sender id="Unknown" />
+        <message:Receiver id="Unknown" />
+    </message:Header>
+    <message:Structures><structure:Codelists><structure:Codelist id="CL_SNA_TABLE1__OBS_STATUS" agencyID="OECD" version="1.0" isExternalReference="false" isFinal="true">
+                <common:Name xml:lang="en">Observation Status</common:Name>
+                <common:Name xml:lang="fr">Observation Status</common:Name>
+                <structure:Code id="B">
+                    <common:Name xml:lang="en">Break</common:Name>
+                    <common:Name xml:lang="fr">Rupture</common:Name>
+                </structure:Code>
+                <structure:Code id="C">
+                    <common:Name xml:lang="en">Non-publishable and confidential value</common:Name>
+                    <common:Name xml:lang="fr">Valeur non-publiable et confidentielle</common:Name>
+                </structure:Code>
+                <structure:Code id="D">
+                    <common:Name xml:lang="en">Difference in methodology</common:Name>
+                    <common:Name xml:lang="fr">Différence de méthodologie</common:Name>
+                </structure:Code>
+                <structure:Code id="E">
+                    <common:Name xml:lang="en">Estimated value</common:Name>
+                    <common:Name xml:lang="fr">Valeur estimée</common:Name>
+                </structure:Code>
+                <structure:Code id="F">
+                    <common:Name xml:lang="en">Forecast value</common:Name>
+                    <common:Name xml:lang="fr">Valeur projetée</common:Name>
+                </structure:Code>
+                <structure:Code id="G">
+                    <common:Name xml:lang="en">Experimental value</common:Name>
+                    <common:Name xml:lang="fr">Estimation expérimentale</common:Name>
+                </structure:Code>
+                <structure:Code id="H">
+                    <common:Name xml:lang="en">Missing value, holiday or weekend</common:Name>
+                    <common:Name xml:lang="fr">Valeur manquante ; jour férié ou fin de semaine</common:Name>
+                </structure:Code>
+                <structure:Code id="I">
+                    <common:Name xml:lang="en">Incomplete data</common:Name>
+                    <common:Name xml:lang="fr">donnée incomplète</common:Name>
+                </structure:Code>
+                <structure:Code id="L">
+                    <common:Name xml:lang="en">Missing value; data exist but were not collected</common:Name>
+                    <common:Name xml:lang="fr">Valeur manquante ; donnée existe mais n'a pas été collecté</common:Name>
+                </structure:Code>
+                <structure:Code id="M">
+                    <common:Name xml:lang="en">Missing value; data cannot exist</common:Name>
+                    <common:Name xml:lang="fr">Valeur manquante ; donnée ne peut pas exister</common:Name>
+                </structure:Code>
+                <structure:Code id="N">
+                    <common:Name xml:lang="en">Non-publishable, but non-confidential value</common:Name>
+                    <common:Name xml:lang="fr">Valeur non-publiable, mais non-confidentielle</common:Name>
+                </structure:Code>
+                <structure:Code id="P">
+                    <common:Name xml:lang="en">Provisional value</common:Name>
+                    <common:Name xml:lang="fr">Valeur provisoire</common:Name>
+                </structure:Code>
+                <structure:Code id="R">
+                    <common:Name xml:lang="en">Confidential statistical information due to identifiable</common:Name>
+                    <common:Name xml:lang="fr">Information statistique confidentielle due à identifiable</common:Name>
+                </structure:Code>
+                <structure:Code id="S">
+                    <common:Name xml:lang="en">Strike</common:Name>
+                    <common:Name xml:lang="fr">Grève</common:Name>
+                </structure:Code>
+                <structure:Code id="U">
+                    <common:Name xml:lang="en">Low reliability</common:Name>
+                    <common:Name xml:lang="fr">Faible fiabilité</common:Name>
+                </structure:Code>
+                <structure:Code id="Z">
+                    <common:Name xml:lang="en">Absolute zero observation</common:Name>
+                    <common:Name xml:lang="fr">Observation zéro absolu</common:Name>
+                </structure:Code>
+            </structure:Codelist>
+            </structure:Codelists></message:Structures></message:Structure>
