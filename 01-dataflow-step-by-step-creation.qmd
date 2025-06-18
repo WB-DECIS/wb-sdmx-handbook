@@ -159,3 +159,80 @@ I am still failing to generate a valid metadaflow. Need to look at it a bit more
 ### Upload Metadata
 
 [Download data](inputs/OECD_SNA_TABLE1_1.0_-_AUS_metadata.csv)
+
+## Retrieve Data and Metadata
+
+### Retrieve Metadata
+
+#### Endpoint structure
+The endpoint for retrieving metadata from the .Stat SDMX API typically follows this structure:
+
+---
+
+| Component                                     | Description                                                                                                         | Example / Notes                                                                                                                                                         |
+|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Base URL**                                  | Root of the .Stat Suite API                                                                                         | `https://archivensiserviceqa.asestg.worldbank.org/rest`                                                                                                                  |
+| **API version & service**                     | Versioned SDMX RESTful data service                                                                                 | `/v2/data`                                                                                                                                                               |
+| **Endpoint type**                             | Operation for referential metadata of a dataflow                                                                    | `/dataflow`                                                                                                                                                              |
+| **Agency**                                    | Responsible agency for the dataflow                                                                                 | `OECD`                                                                                                                                                                   |
+| **Dataflow ID**                               | Identifier of the dataflow (table/series set)                                                                        | `SNA_TABLE1`                                                                                                                                                             |
+| **Version**                                   | Version of the dataflow DSD                                                                                         | `1.0`                                                                                                                                                                    |
+| **Filter**                                    | Key values to select a specific series or concept; here: country + account item                                       | `AUS.P51.VOB` → Australia (AUS), account P51 (Net national income), variable VOB (Balance of payments concept)                                                           |
+| **Dimension filter**                          | URL parameter `c[...]` to filter by dimension, using SDMX 3.0 syntax                                                  | `c[TIME_PERIOD]=ge:2015%2Ble:2015` → TIME_PERIOD ≥ 2015 and ≤ 2015 (note the `+` is percent-encoded as `%2B`)                                                            |
+| **attributes**                                | Which attributes to return; replaces the old `detail` parameter                                                       | `attributes=msd` → only referential metadata attributes (e.g., descriptive notes, cross-references)                                                                     |
+| **measures**                                  | Which measures to return; replaces the old `detail` parameter                                                         | `measures=none` → omit measure values                                                                                                                                    |
+| **Accept header**                             | Requested output format & version                                                                                   | `Accept: application/vnd.sdmx.data+json;version=2.0`  (also supports CSV via `application/vnd.sdmx.data+csv;version=2.0`)                                               |
+
+---
+
+
+Each part of the URL path dives deeper into the SDMX model (service → agency → dataflow → version → key), and the query string refines what slice of metadata you want returned and in which format.
+
+#### Examples
+
+Below are examples of how to query referential metadata from the .Stat SDMX API.
+
+:::{.panel-tabset group="language"}
+
+### R
+
+```{r}
+#| message: false
+#| warning: false
+# install.packages("httr")  # if not already installed
+library(httr)
+library(jsonlite)
+
+url <- "https://archivensiserviceqa.asestg.worldbank.org/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.VOB?c[TIME_PERIOD]=ge:2015%2Ble:2015&attributes=msd&measures=none"
+headers <- add_headers(
+  Accept = "application/vnd.sdmx.data+json;version=2.0"
+)
+
+resp <- GET(url, headers)
+stop_for_status(resp)
+data <- content(resp, as = "text", encoding = "UTF-8")
+json <- fromJSON(data, simplifyVector = FALSE)
+```
+
+### Python
+
+```{python}
+# pip install requests
+import requests
+
+url = (
+    "https://archivensiserviceqa.asestg.worldbank.org/rest/"
+    "v2/data/dataflow/OECD/SNA_TABLE1/1.0/"
+    "AUS.P51.VOB?c[TIME_PERIOD]=ge:2015%2Ble:2015&attributes=msd&measures=none"
+)
+headers = {
+    "Accept": "application/vnd.sdmx.data+json;version=2.0"
+}
+
+resp = requests.get(url, headers=headers)
+resp.raise_for_status()
+data = resp.json()
+print(data)
+```
+
+:::
