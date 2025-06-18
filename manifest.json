@@ -14,11 +14,11 @@
     "engines": ["markdown", "knitr"]
   },
   "python": {
-    "version": "3.12.3",
+    "version": "3.11.9",
     "requires": null,
     "package_manager": {
       "name": "pip",
-      "version": "24.1.2",
+      "version": "24.0",
       "package_file": "requirements.txt"
     }
   },
@@ -1487,7 +1487,7 @@
       "checksum": "20d3273ad995f344fa1d144ca5d3ecf1"
     },
     "requirements.txt": {
-      "checksum": "2d7089ea24ba791fc51e340a7d62ff9e"
+      "checksum": "d0a970a18b6d370f794170905b1e9035"
     },
     "summary.qmd": {
       "checksum": "9bfd00973062420d4524b52e7a4c753b"
