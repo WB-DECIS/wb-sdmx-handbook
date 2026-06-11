@@ -196,9 +196,7 @@ Below are examples of how to query referential metadata from the .Stat SDMX API.
 
 ### R
 
-```{r}
-#| message: false
-#| warning: false
+```r
 # install.packages("httr")  # if not already installed
 library(httr)
 library(jsonlite)
@@ -216,7 +214,7 @@ json <- fromJSON(data, simplifyVector = FALSE)
 
 ### Python
 
-```{python}
+```python
 # pip install requests
 import requests
 
