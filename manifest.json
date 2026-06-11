@@ -12,7 +12,7 @@
   },
   "files": {
     ".gitignore": {
-      "checksum": "daaa425e05e98250454c9f074d8533ec"
+      "checksum": "a4eba6ae756f2c43eb5fd56a1b12e3c0"
     },
     ".positai/settings.json": {
       "checksum": "92055d5bed2e1bcc2dc7896e59631187"
@@ -32,8 +32,11 @@
     "03-data-pipeline-using-fmr-and-pysdmx.qmd": {
       "checksum": "45e7dbcf0d6edcf7ecb41ce911e3b107"
     },
+    "04-introduction-to-vtl.qmd": {
+      "checksum": "baa3ac8cbf0b7ad927f0ee57fb2dcce5"
+    },
     "_quarto.yml": {
-      "checksum": "1d0cfdc5574e985e92ee220309eec6b0"
+      "checksum": "66c5158ff001bb6510ea0adedf674cb9"
     },
     "cover.png": {
       "checksum": "308012df3fa962ae61c7114806331a72"
