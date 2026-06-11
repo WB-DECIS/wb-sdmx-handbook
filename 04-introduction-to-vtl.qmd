@@ -1,0 +1,172 @@
+# An Introduction to VTL
+
+This chapter introduces **VTL (Validation and Transformation Language)** at a conceptual level. Its goal is to explain *what VTL is*, *what kinds of things it lets you express*, and *how it complements the SDMX work* described in the rest of this handbook.
+
+::: callout-note
+This chapter deliberately stays at the conceptual level. It does **not** cover how to install an engine, write production rules, or wire VTL into our pipelines. Hands-on implementation will be the subject of a later iteration.
+:::
+
+## What is VTL?
+
+VTL is the **SDMX-sponsored standard language for declaratively defining validation and transformation rules for statistical data**. In practice, it gives us a single, formal way to answer two recurring questions about a dataset:
+
+-   **Validation** — *Is this data correct?* For example: are all observation values non-negative? Does a flagged confidential value follow our confidentiality rules? Does "European Union" equal the sum of its member states?
+-   **Transformation** — *How do I derive new data from existing data?* For example: compute a year-on-year growth rate, aggregate national figures to a regional total, or combine two datasets into one.
+
+Two properties make VTL distinctive:
+
+1.  **It is declarative.** You describe *what* a calculation or check means at the business level, not *how* a particular program should compute it. There are no loops, no mutable variables, and no side effects — you compose operators into expressions.
+2.  **It is technology-neutral.** VTL defines the *meaning* of operators with precise syntax and semantics, but it does not prescribe an implementation. Different **engines** (software libraries) can execute the same VTL script and must produce the same result. This means a rule written once can be understood by a human, stored as metadata, and run by a machine — without being locked into a specific tool or programming language.
+
+::: callout-tip
+A useful way to think about it: a DSD tells you **what your data looks like**; VTL lets you formally express **what must be true about your data** and **how to derive new data from it** — in a way that is independent of any particular tool.
+:::
+
+### Versions
+
+The current official version is **VTL 2.1** (released April 2025). VTL 2.0 is still widely encountered, and a future **2.2** is in development. The 2.x line is largely stable; this chapter describes concepts that are common across the 2.x versions.
+
+## The VTL Information Model
+
+To express rules about data, VTL first needs a precise model of what "data" *is*. This model deliberately reuses the common parts of SDMX (and related standards such as DDI and GSIM), so it will feel familiar after the earlier chapters on DSDs.
+
+### Data Sets, Data Structures, and Components
+
+The fundamental artefact in VTL is the **Data Set**: a structured collection of observations. Every Data Set has two complementary views:
+
+-   its **Data Structure** (the metadata) — an ordered set of **Components**, each with a name, a data type, and a **role**;
+-   its **Data Points** (the data) — the individual observations (rows) it currently contains.
+
+Each Component plays exactly one **role**, and these roles are the key to understanding how VTL operators behave:
+
+```{mermaid}
+graph TD
+    A[Data Set] -- has a --> B[Data Structure]
+    A -- contains --> C[Data Points]
+    B -- is an ordered set of --> D[Components]
+    D -- role --> E[Identifier]
+    D -- role --> F[Measure]
+    D -- role --> G[Attribute]
+```
+
+-   **Identifier** — together, all the Identifier components form the **key** that uniquely identifies each Data Point (e.g. reference area + time period). Most operators *match* observations across Data Sets using their Identifier values.
+-   **Measure** — the values actually being described or measured (e.g. the observation value). VTL is **multi-measure**: a Data Set can carry several Measures. Arithmetic and most "content" operations act on Measures.
+-   **Attribute** — descriptive metadata attached to observations (e.g. observation status, confidentiality flag). Attributes are generally not the subject of calculations; instead they *follow* the data through operations according to a propagation rule. VTL 2.0+ adds **viral attributes**, which automatically propagate into results (useful, for instance, for a confidentiality flag that must survive every transformation).
+
+::: callout-note
+These roles map cleanly onto SDMX concepts you already know: SDMX **Dimensions** behave like VTL **Identifiers**, SDMX **Measures** like VTL **Measures**, and SDMX **Attributes** like VTL **Attributes**. This alignment is not a coincidence — it is what lets VTL operate naturally on SDMX data.
+:::
+
+### Functional integrity
+
+The core invariant of the model is **functional integrity**: the Identifier values must *uniquely* determine each Data Point. In other words, no two Data Points in a Data Set may share the same combination of Identifier values. A Data Set that contains duplicate keys is not a valid VTL input. Many operators rely on this guarantee (for example, to match observations between two Data Sets one-to-one).
+
+### Variables, Value Domains, and Code Items
+
+VTL separates *what a variable means* from *what values it is allowed to take*:
+
+-   A **Value Domain** is the set of allowed values for a representation. It can be **described** (defined by a type and constraints, e.g. "all positive integers") or **enumerated** (a finite list of **Code Items**, e.g. an ISO country code list — the VTL equivalent of an SDMX codelist).
+-   **Code Items** can stand in **relations** to one another — for example "European Union = France + Germany + …" or generic parent/child hierarchies. These relations are exactly what VTL's *hierarchical rulesets* (below) validate and compute over.
+
+## What can VTL express? (Feasibility)
+
+VTL ships with a fixed library of operators. The library is rich, but it is also *closed*: if an operator is not in the standard, it does not exist in standard VTL (an engine may add extensions, but those are non-standard). At a conceptual level, the capabilities group as follows.
+
+### Transformations: deriving new data
+
+A **Transformation** is a single assignment statement:
+
+```
+result := expression ;     // non-persistent: an intermediate result
+result <- expression ;     // persistent: a real output artefact
+```
+
+The distinction matters: only `<-` (persistent) results are treated as final outputs to be stored or returned; `:=` (non-persistent) results are intermediate steps usable by later statements. The result of a transformation is itself a Data Set, so transformations chain together.
+
+The expression on the right can use a wide range of operators, including:
+
+-   **Clause operators** — the everyday workhorse, applied with square brackets: `filter` (keep matching rows), `calc` (compute a new component), `aggr` (aggregate with `group by`), `keep`/`drop` (select components), `rename`, and `pivot`/`unpivot` (reshape).
+-   **Arithmetic, string, comparison, and boolean operators** — acting component-wise on Measures.
+-   **Join operators** (`inner_join`, `left_join`, …) — to combine Data Sets, matching on Identifiers.
+-   **Set operators** (`union`, `intersect`, `setdiff`, …).
+-   **Aggregate and analytic operators** — sums, averages, counts, and moving/`over` window calculations.
+-   **Time operators** — period shifts, fills, and conversions between time representations.
+-   **Conditional operators** — `if`, `nvl`, and (from 2.1) `case`.
+
+### Validation: checking that data is correct
+
+A defining feature of VTL is that **validation produces data, not exceptions**. The `check_*` operators return a Data Set that flags which Data Points passed or failed (with an `errorcode` and `errorlevel`), rather than throwing an error. You then inspect, filter, or report on that result Data Set — which fits naturally into a data-quality workflow.
+
+Validation logic is typically packaged as a reusable **ruleset**, of which there are two kinds:
+
+```{mermaid}
+graph TD
+    A[Validation rule] --> B{References other rows' codes?}
+    B -- No, only this row's components --> C[Datapoint ruleset]
+    B -- Yes, across the code hierarchy --> D[Hierarchical ruleset]
+    C -- applied with --> E[check_datapoint]
+    D -- applied with --> F[check_hierarchy]
+```
+
+-   **Datapoint rulesets** validate constraints **within a single Data Point**, across its components — *horizontal* checks. Example: "if `ACCOUNT_ITEM = GOODS` then `OBS_VALUE >= 0`." Applied with `check_datapoint`.
+-   **Hierarchical rulesets** validate relations **across Data Points**, among the code values of an Identifier — *vertical* checks. Example: "Europe = France + Germany + …" or "total = sum of parts." Applied with `check_hierarchy` (to validate) — and the same ruleset can be used with `hierarchy` to *aggregate*, i.e. compute the parent total from its children.
+
+::: callout-tip
+A quick rule of thumb: if a rule only refers to *this observation's own components*, it is a **datapoint** rule. If it refers to *other observations' codes* (sums across a code hierarchy), it is a **hierarchical** rule.
+:::
+
+### Reuse: user-defined operators
+
+Because VTL has no loops or recursion, reuse is achieved through **composition** and through **user-defined operators (UDOs)** — parameterised operators you define once and then call like a built-in. This keeps complex logic (e.g. a standard growth-rate calculation) consistent across many datasets.
+
+### Putting statements together: Transformation Schemes
+
+A collection of transformations that form a complete program is a **Transformation Scheme** (a "VTL script"). One conceptual point routinely surprises newcomers:
+
+::: callout-important
+**Textual order is not execution order.** A Transformation Scheme is a *dependency graph*, not a sequence of steps. The engine executes statements in the order required by their data dependencies, and the graph must be **acyclic** — a result may not (directly or indirectly) depend on itself.
+:::
+
+## How VTL complements SDMX
+
+The earlier chapters covered how to define **structures** (DSDs, codelists, dataflows) and how to move and publish **data** in .Stat Suite. VTL fills a specific, complementary gap in that picture: it provides a **standard, formal, tool-independent way to express the validation and transformation logic** that sits between raw source data and published SDMX data.
+
+```{mermaid}
+flowchart LR
+    A[Source data] --> B[Map to SDMX structures]
+    B --> C{VTL}
+    C -- validation rules --> D[Quality report]
+    C -- transformation rules --> E[Derived / aggregated data]
+    E --> F[Publish in .Stat Suite]
+    D --> F
+
+    classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
+    class C vtl;
+```
+
+The complementarity works on several levels:
+
+-   **Shared information model.** VTL's Data Sets, Components, and roles align directly with SDMX dataflows, DSD components, and codelists. SDMX describes the *structure* of the data; VTL describes the *rules and calculations* that operate on that structure. They are designed to fit together.
+
+-   **VTL rules are themselves SDMX metadata.** VTL logic is not stored as opaque script text floating outside the system. It is exchanged inside SDMX as first-class structural artefacts — principally the **`TransformationScheme`**, together with **`RulesetScheme`** and **`UserDefinedOperatorScheme`**. They are maintained, versioned, and referenced (by URN) just like a DSD or a codelist. This means our validation and transformation logic can live alongside our structures in a registry such as FMR, rather than being buried inside individual scripts.
+
+-   **From implicit to explicit logic.** Today, much validation and transformation logic is embedded in pipeline code, spreadsheets, or institutional memory. VTL lets that logic be written down once, in a standard form that is **human-readable, machine-executable, and portable** across tools — directly supporting this handbook's goals of consistency, knowledge transfer, and standardization.
+
+-   **Separation of meaning from execution.** Because VTL is technology-neutral, the *definition* of a check or calculation is decoupled from the *engine* that runs it. We can agree on what a rule means, store it as metadata, and remain free to choose (or change) the software that executes it.
+
+::: callout-note
+**Where VTL fits among our tools.** The matrix generator and FMR help us define *structures*; .Stat Suite stores and disseminates *data*; VTL is the standard for the *rules and calculations* that connect source data to published data. The next iteration of this chapter will turn these concepts into concrete, runnable examples.
+:::
+
+## Summary
+
+-   **VTL** is the SDMX standard for **declaratively** and **technology-neutrally** expressing **validation** and **transformation** rules for statistical data.
+-   It operates on **Data Sets** whose **Components** play **Identifier**, **Measure**, or **Attribute** roles — a model that aligns directly with SDMX.
+-   It can **transform** data (clause operators, joins, aggregations, time operations, …) and **validate** data, where validation returns a result Data Set (via `check_datapoint` and `check_hierarchy`) rather than raising errors.
+-   Logic is packaged into reusable **datapoint rulesets**, **hierarchical rulesets**, and **user-defined operators**, and assembled into **Transformation Schemes** that execute by data dependency, not textual order.
+-   VTL **complements SDMX** by providing a shared, portable, metadata-native way to express the rules and calculations that bridge source data and published SDMX data.
+
+## Further reading
+
+-   [VTL 2.1 User Manual and Reference Manual](https://sdmx-twg.github.io/vtl/v2.1/) — the normative specification (User Manual for concepts and the information model; Reference Manual for the operator library).
+-   [VTL specification repository](https://github.com/sdmx-twg/vtl) — grammar, technical notes, and worked examples.
