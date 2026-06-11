@@ -12,6 +12,7 @@ book:
     - 01-dataflow-step-by-step-creation.qmd
     - 02-how-to-create-a-data-pipeline.qmd
     - 03-data-pipeline-using-fmr-and-pysdmx.qmd
+    - 04-introduction-to-vtl.qmd
     - summary.qmd
     - references.qmd
 
