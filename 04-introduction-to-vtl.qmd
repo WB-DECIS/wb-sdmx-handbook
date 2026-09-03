@@ -98,7 +98,7 @@ The expression on the right can use a wide range of operators, including:
 -   **Time operators** — period shifts, fills, and conversions between time representations.
 -   **Conditional operators** — `if`, `nvl`, and (from 2.1) `case`.
 
-Every group except the last two appears in at least one runnable example below.
+Each of these groups is used in at least one example below; time operators appear only as `getyear` in the SDMX subsection.
 
 ### Validation: checking that data is correct
 
@@ -440,7 +440,7 @@ REF_AREA TIME_PERIOD bool_var  imbalance      errorcode  errorlevel
      USA        2020    False       <NA> SHARE_OVER_100           2
 ```
 
-Watch JPN. Its `OBS_VALUE` is null, so `OBS_VALUE >= 0` is null — neither true nor false. In the `all` output it appears with a null `bool_var` and no error code, and in the `invalid` output it does not appear at all. **A null silently passes every check.** If missing data should be an error, you have to say so explicitly with `isnull`; this is the most common way a VTL validation suite reports a clean bill of health over data it never actually tested.
+Watch JPN. Its `OBS_VALUE` is null, so `OBS_VALUE >= 0` is null — neither true nor false. In the `all` output it appears with a null `bool_var` and no error code, and in the `invalid` output it does not appear at all. **A null is never reported as invalid.** If missing data should be an error, you have to say so explicitly with `isnull`; this is the most common way a VTL validation suite reports a clean bill of health over data it never actually tested.
 
 #### 06 — `define datapoint ruleset`: named, reusable, multi-rule validation
 
@@ -600,7 +600,7 @@ The reason to reach for a UDO is not brevity but putting a rule in a single plac
 | [02 filter, keep, rename](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/02_filter_keep_rename.vtl) | `filter`, `rename`, `keep` | Three-valued logic: a condition and its negation do not partition data containing nulls |
 | [03 aggr](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/03_aggregate.vtl) | `aggr`, `group by` | `group by` takes Identifiers; ungrouped Identifiers and all Attributes are dropped; aggregates skip nulls |
 | [04 join](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/04_join.vtl) | `inner_join`, `calc identifier` | Keys must nest; model one-to-many mappings as Measure columns |
-| [05 check](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/05_check.vtl) | `check` | Validation returns data, not exceptions; a null passes every check silently |
+| [05 check](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/05_check.vtl) | `check` | Validation returns data, not exceptions; a null is never reported as invalid unless you test for it with `isnull` |
 | [06 datapoint ruleset](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/06_datapoint_ruleset.vtl) | `define datapoint ruleset`, `check_datapoint` | Named multi-rule validation; `when/then`; one result row per (row, rule) |
 | [07 hierarchical ruleset](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/07_hierarchical_ruleset.vtl) | `define hierarchical ruleset`, `check_hierarchy`, `hierarchy` | Totals vs parts; `imbalance`; validation and aggregation from one ruleset can disagree |
 | [08 user-defined operator](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/08_user_defined_operator.vtl) | `define operator` | Reuse without repetition; put the guard where no call site can forget it |
