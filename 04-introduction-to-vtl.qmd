@@ -1,9 +1,9 @@
 # An Introduction to VTL
 
-This chapter introduces **VTL (Validation and Transformation Language)** at a conceptual level. Its goal is to explain *what VTL is*, *what kinds of things it lets you express*, and *how it complements the SDMX work* described in the rest of this handbook.
+This chapter introduces **VTL (Validation and Transformation Language)** in two parts. The first part explains *what VTL is*, *what kinds of things it lets you express*, and *how it complements the SDMX work* described in the rest of this handbook. The second part, [VTL in practice](#vtl-in-practice), turns those concepts into small, runnable examples.
 
 ::: callout-note
-This chapter deliberately stays at the conceptual level. It does **not** cover how to install an engine, write production rules, or wire VTL into our pipelines. Hands-on implementation will be the subject of a later iteration.
+**How to read this chapter.** If you have never seen VTL, read the concepts first; they are short. Then work through *VTL in practice*. It starts with six-row toy datasets where you can check every result in your head, moves on to a real World Bank dataflow, and ends with a placeholder for the case where structures and data are fetched from an API. Every example is taken from the [vtl-toy-pipeline](https://github.com/WB-DECIS/vtl-toy-pipeline) repository, where you can run it yourself.
 :::
 
 ## What is VTL?
@@ -24,7 +24,7 @@ A useful way to think about it: a DSD tells you **what your data looks like**; V
 
 ### Versions
 
-The current official version is **VTL 2.1** (released April 2025). VTL 2.0 is still widely encountered, and a future **2.2** is in development. The 2.x line is largely stable; this chapter describes concepts that are common across the 2.x versions.
+The current official version of the standard is **VTL 2.2** (released July 2026). Most engines available today, including the one used in this chapter, implement **VTL 2.1** (April 2025). VTL 2.0 is still widely encountered in older material, and work on a 2.3 has begun. None of this matters for what follows: the concepts are common to the whole 2.x line, and the examples use only operators that exist in both 2.1 and 2.2.
 
 ## The VTL Information Model
 
@@ -59,16 +59,13 @@ These roles map cleanly onto SDMX concepts you already know: SDMX **Dimensions**
 
 ### Functional integrity
 
-The core invariant of the model is **functional integrity**: the Identifier values must *uniquely* determine each Data Point. In other words, no two Data Points in a Data Set may share the same combination of Identifier values. A Data Set that contains duplicate keys is not a valid VTL input. Many operators rely on this guarantee (for example, to match observations between two Data Sets one-to-one).
+One rule holds every Data Set together: **no two Data Points may share the same combination of Identifier values.** If `REF_AREA` and `TIME_PERIOD` are the Identifiers, there can be only one row for France in 2021. The specification calls this **functional integrity** — the Identifiers *functionally determine* the Measures and Attributes — and you will meet the term in engine error messages, because a file with a duplicated key is rejected before any rule runs. Many operators rely on this guarantee, for example to match observations between two Data Sets one-to-one.
 
-### Variables, Value Domains, and Code Items
+### Value Domains and Code Items
 
-VTL separates *what a variable means* from *what values it is allowed to take*:
+VTL separates *what a variable means* from *what values it is allowed to take*. The set of allowed values is a **Value Domain**. It is either *described* by a type and constraints (e.g. "any positive number") or *enumerated* as a finite list of **Code Items** — in SDMX terms, an enumerated Value Domain is a codelist and a Code Item is a code. Code Items can stand in **relations** to one another, for example "European Union = France + Germany + …", and those relations are exactly what VTL's *hierarchical rulesets* (below) validate and compute over. VTL does not define value domains itself; they are supplied by the surrounding environment, typically an SDMX registry, and referenced by name.
 
--   A **Value Domain** is the set of allowed values for a representation. It can be **described** (defined by a type and constraints, e.g. "all positive integers") or **enumerated** (a finite list of **Code Items**, e.g. an ISO country code list — the VTL equivalent of an SDMX codelist).
--   **Code Items** can stand in **relations** to one another — for example "European Union = France + Germany + …" or generic parent/child hierarchies. These relations are exactly what VTL's *hierarchical rulesets* (below) validate and compute over.
-
-## What can VTL express? (Feasibility)
+## What can VTL express?
 
 VTL ships with a fixed library of operators. The library is rich, but it is also *closed*: if an operator is not in the standard, it does not exist in standard VTL (an engine may add extensions, but those are non-standard). At a conceptual level, the capabilities group as follows.
 
@@ -76,12 +73,20 @@ VTL ships with a fixed library of operators. The library is rich, but it is also
 
 A **Transformation** is a single assignment statement:
 
-```
+```{.default .vtl}
 result := expression ;     // non-persistent: an intermediate result
 result <- expression ;     // persistent: a real output artefact
 ```
 
-The distinction matters: only `<-` (persistent) results are treated as final outputs to be stored or returned; `:=` (non-persistent) results are intermediate steps usable by later statements. The result of a transformation is itself a Data Set, so transformations chain together.
+Here is a real one — the first example in *VTL in practice*:
+
+```{.default .vtl}
+DS_out <- DS_1 [ calc OBS_VALUE_X2 := OBS_VALUE * 2 ];
+```
+
+It reads: take the Data Set `DS_1`, compute a new component `OBS_VALUE_X2` as twice `OBS_VALUE` for every row, and store the result as `DS_out`.
+
+The distinction between the two arrows matters: only `<-` (persistent) results are treated as final outputs to be stored or returned; `:=` (non-persistent) results are intermediate steps usable by later statements. The result of a transformation is itself a Data Set, so transformations chain together. One engine-level consequence is worth knowing from the start: the engine used in this chapter returns only persistent results by default, so an intermediate `:=` result that you expected to see was not lost — it was simply never asked for. That is engine behaviour, not part of the standard.
 
 The expression on the right can use a wide range of operators, including:
 
@@ -93,11 +98,13 @@ The expression on the right can use a wide range of operators, including:
 -   **Time operators** — period shifts, fills, and conversions between time representations.
 -   **Conditional operators** — `if`, `nvl`, and (from 2.1) `case`.
 
+Each of these groups is used in at least one example below; time operators appear only as `getyear` in the SDMX subsection.
+
 ### Validation: checking that data is correct
 
-A defining feature of VTL is that **validation produces data, not exceptions**. The `check_*` operators return a Data Set that flags which Data Points passed or failed (with an `errorcode` and `errorlevel`), rather than throwing an error. You then inspect, filter, or report on that result Data Set — which fits naturally into a data-quality workflow.
+A defining feature of VTL is that **validation produces data, not exceptions**. The `check` operators return a Data Set that flags which Data Points passed or failed (with an `errorcode` and `errorlevel`), rather than throwing an error. You then inspect, filter, or report on that result Data Set — which fits naturally into a data-quality workflow.
 
-Validation logic is typically packaged as a reusable **ruleset**, of which there are two kinds:
+The simplest form is `check`, which wraps a single boolean expression. Real validation is a catalogue of rules that has to be versioned, shared, and reported on rule by rule, so logic is typically packaged as a reusable **ruleset**, of which there are two kinds:
 
 ```{mermaid}
 graph TD
@@ -108,11 +115,15 @@ graph TD
     D -- applied with --> F[check_hierarchy]
 ```
 
--   **Datapoint rulesets** validate constraints **within a single Data Point**, across its components — *horizontal* checks. Example: "if `ACCOUNT_ITEM = GOODS` then `OBS_VALUE >= 0`." Applied with `check_datapoint`.
--   **Hierarchical rulesets** validate relations **across Data Points**, among the code values of an Identifier — *vertical* checks. Example: "Europe = France + Germany + …" or "total = sum of parts." Applied with `check_hierarchy` (to validate) — and the same ruleset can be used with `hierarchy` to *aggregate*, i.e. compute the parent total from its children.
+-   **Datapoint rulesets** validate constraints **within a single Data Point**, across its components — *horizontal* (row-level) checks. Example: "if `ACCOUNT_ITEM = GOODS` then `OBS_VALUE >= 0`." Applied with `check_datapoint`.
+-   **Hierarchical rulesets** validate relations **across Data Points**, among the code values of an Identifier — *vertical* (across-rows) checks. Example: "Europe = France + Germany + …" or "total = sum of parts." Applied with `check_hierarchy` (to validate) — and the same ruleset can be used with `hierarchy` to *aggregate*, i.e. compute the parent total from its children.
 
 ::: callout-tip
 A quick rule of thumb: if a rule only refers to *this observation's own components*, it is a **datapoint** rule. If it refers to *other observations' codes* (sums across a code hierarchy), it is a **hierarchical** rule.
+:::
+
+::: callout-warning
+**A null never fails a check.** VTL booleans are three-valued: `true`, `false`, and `null`. A comparison involving a missing value evaluates to `null`, and `null` is neither a pass nor a failure, so the observation is not flagged by the check — nor by the check's negation. If missing data should be an error, you must say so explicitly with `isnull`. Examples 02 and 05 below show this happening on real output.
 :::
 
 ### Reuse: user-defined operators
@@ -155,18 +166,808 @@ The complementarity works on several levels:
 -   **Separation of meaning from execution.** Because VTL is technology-neutral, the *definition* of a check or calculation is decoupled from the *engine* that runs it. We can agree on what a rule means, store it as metadata, and remain free to choose (or change) the software that executes it.
 
 ::: callout-note
-**Where VTL fits among our tools.** The matrix generator and FMR help us define *structures*; .Stat Suite stores and disseminates *data*; VTL is the standard for the *rules and calculations* that connect source data to published data. The next iteration of this chapter will turn these concepts into concrete, runnable examples.
+**Where VTL fits among our tools.** The matrix generator and FMR help us define *structures*; .Stat Suite stores and disseminates *data*; VTL is the standard for the *rules and calculations* that connect source data to published data. The rest of this chapter shows what that looks like in code.
+:::
+
+## VTL in practice
+
+Whatever the engine, running VTL always needs the same three inputs:
+
+1.  the **script** — the VTL itself;
+2.  the **data structures** — for every Data Set the script reads, the name, role and type of each component (VTL cannot decide what an operator does without the roles);
+3.  the **data points** — the actual rows.
+
+The engine type-checks the script against the structures, executes it, and returns one result Data Set per persistent (`<-`) assignment.
+
+```{mermaid}
+flowchart LR
+    S["VTL script<br/>(.vtl file or TransformationScheme)"] --> E["VTL engine"]
+    D["Data structures<br/>(JSON file or SDMX DSD)"] --> E
+    P["Data points<br/>(CSV, DataFrame or SDMX-ML)"] --> E
+    E --> R["Result Data Sets<br/>(one per persistent assignment)"]
+
+    classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
+    class E vtl;
+```
+
+The three subsections that follow change *where those inputs come from*, while the language stays the same:
+
+| Subsection | Script | Data structures | Data points |
+|---|---|---|---|
+| Pure VTL | `.vtl` file | hand-written JSON | six-row CSV |
+| VTL and SDMX structures | `.vtl` file, then a `TransformationScheme` | a real DSD read from SDMX-ML | a real dataflow read from SDMX-ML |
+| VTL, SDMX and an API | fetched from a registry | fetched from a registry | fetched over SDMX REST |
+
+The engine throughout is [vtlengine](https://docs.vtlengine.meaningfuldata.eu), an open-source Python implementation of VTL 2.1, and SDMX reading and writing is done with [pysdmx](https://py.sdmx.io). Both are the libraries used elsewhere in this handbook.
+
+::: callout-tip
+**Running the examples yourself.** All the code below comes from the [vtl-toy-pipeline](https://github.com/WB-DECIS/vtl-toy-pipeline) repository, which needs no network access and no configuration:
+
+```bash
+git clone https://github.com/WB-DECIS/vtl-toy-pipeline
+cd vtl-toy-pipeline
+uv sync --extra dev          # or: pip install "pysdmx[xml,data]~=1.19.0" "vtlengine~=1.9.3" pytest
+python examples/01_calc.py   # start here
+python -m pytest tests/      # run all 14 examples and check them against expected values
+```
+
+Each example is three files: a `.py` you run, a `.vtl` containing nothing but VTL, and its inputs under `inputs/`. The output blocks in this chapter were produced by running those scripts on the pinned versions (pysdmx 1.19.0, vtlengine 1.9.3).
+:::
+
+Two conventions from the repository carry over to this chapter. First, **the `.vtl` files contain only VTL** — no string interpolation, no scripts assembled in Python — so if you want to know what a transformation does, you read the transformation. Second, every example calls `semantic_analysis` **before** `run`. It type-checks the script against the structures without touching any data and returns the *structure* of each output. Seeing that a result lost an Identifier or gained a Measure is usually faster than debugging the data, so the examples print it, one line per output: `ID` lists the Identifiers, `ME` the Measures and `AT` the Attributes.
+
+### Pure VTL: toy data and hand-written structures
+
+The examples in this subsection use tiny datasets of the same kind: government education spending as a percentage of GDP for a handful of countries and years. Examples 01 to 03 share the one below, which has one deliberately missing value; from example 04 onwards, each example shows its own input wherever it differs.
+
+```{.default .csv}
+REF_AREA,TIME_PERIOD,OBS_VALUE,OBS_STATUS
+FRA,2020,4.5,A
+FRA,2021,4.8,A
+DEU,2020,4.2,A
+DEU,2021,,M
+BRA,2020,5.9,A
+BRA,2021,6.1,E
+```
+
+The CSV alone is not enough: the engine needs to know the **role and type** of each column. Without SDMX, that is a small hand-written JSON document — in effect, a minimal DSD:
+
+```json
+{
+  "datasets": [
+    {
+      "name": "DS_1",
+      "DataStructure": [
+        {"name": "REF_AREA",    "type": "String", "role": "Identifier", "nullable": false},
+        {"name": "TIME_PERIOD", "type": "String", "role": "Identifier", "nullable": false},
+        {"name": "OBS_VALUE",   "type": "Number", "role": "Measure",    "nullable": true},
+        {"name": "OBS_STATUS",  "type": "String", "role": "Attribute",  "nullable": true}
+      ]
+    }
+  ]
+}
+```
+
+Note the types are VTL type names (`String`, `Number`, `Integer`, `Boolean`, `Time_Period`, …), not pandas or SQL types, and that Identifiers are never nullable.
+
+The Python that runs an example is the same every time, so it is shown once. From the repository root:
+
+```python
+from pathlib import Path
+from vtlengine import run, semantic_analysis
+
+script     = Path("examples/01_calc.vtl")           # a Path: a plain string would be parsed as VTL text
+structures = Path("inputs/01_calc/structures.json")
+
+# 1. Type-check the script against the structures. No data is read.
+print(semantic_analysis(script=script, data_structures=structures))
+
+# 2. Run it. The datapoints dict is keyed by Data Set NAME, not file name.
+result = run(script=script, data_structures=structures,
+             datapoints={"DS_1": Path("inputs/01_calc/DS_1.csv")})
+
+# 3. Only persistent (<-) results are returned; .data is a pandas DataFrame.
+print(result["DS_out"].data)
+```
+
+Everything that differs between examples is in the `.vtl` file, which is what the rest of this subsection shows.
+
+#### 01 — `calc`: derive a new Measure
+
+The smallest useful VTL program. `calc` adds (or replaces) a component, computed independently for every Data Point.
+
+```{.default .vtl}
+DS_out <- DS_1 [ calc OBS_VALUE_X2 := OBS_VALUE * 2 ];
+```
+
+```
+--- computed output structure -----------------------------------
+DS_out: ID REF_AREA:String, TIME_PERIOD:String | ME OBS_VALUE:Number, OBS_VALUE_X2:Number | AT OBS_STATUS:String
+
+--- DS_out ------------------------------------------------------
+REF_AREA TIME_PERIOD  OBS_VALUE OBS_STATUS  OBS_VALUE_X2
+     FRA        2020        4.5          A           9.0
+     FRA        2021        4.8          A           9.6
+     DEU        2020        4.2          A           8.4
+     DEU        2021       <NA>          M          <NA>
+     BRA        2020        5.9          A          11.8
+     BRA        2021        6.1          E          12.2
+```
+
+Look at DEU/2021: the missing `OBS_VALUE` gives a missing `OBS_VALUE_X2`. **Arithmetic propagates null.** VTL never treats a missing value as zero. Note also that the result keeps the input's Identifiers and Attribute and simply gains one Measure.
+
+#### 02 — `filter`, `rename`, `keep`: clauses, and three-valued logic
+
+Clauses chain left to right, each one taking the previous result. The real lesson here is what `filter` does with a null.
+
+```{.default .vtl}
+DS_high    <- DS_1 [ filter OBS_VALUE > 4.4 ];
+DS_not_low <- DS_1 [ filter not (OBS_VALUE <= 4.4) ];
+
+/* rename then keep. `keep` lists the Measures/Attributes to retain;
+   Identifiers are always kept and must not be listed. */
+DS_out <- DS_1 [ rename OBS_VALUE to VALUE ] [ keep VALUE ];
+```
+
+```
+--- DS_high -- OBS_VALUE > 4.4 ----------------------------------
+REF_AREA TIME_PERIOD  OBS_VALUE OBS_STATUS
+     FRA        2020        4.5          A
+     FRA        2021        4.8          A
+     BRA        2020        5.9          A
+     BRA        2021        6.1          E
+
+--- DS_not_low -- not (OBS_VALUE <= 4.4) ------------------------
+REF_AREA TIME_PERIOD  OBS_VALUE OBS_STATUS
+     FRA        2020        4.5          A
+     FRA        2021        4.8          A
+     BRA        2020        5.9          A
+     BRA        2021        6.1          E
+
+--- DS_out -- renamed and projected -----------------------------
+REF_AREA TIME_PERIOD  VALUE
+     FRA        2020    4.5
+     FRA        2021    4.8
+     DEU        2020    4.2
+     DEU        2021   <NA>
+     BRA        2020    5.9
+     BRA        2021    6.1
+```
+
+Six rows went in. `> 4.4` returned four rows, and `not (<= 4.4)` returned *the same* four rows. A condition and its negation ought to partition the data, but DEU/2021 is null, so both conditions evaluate to `null`, and `filter` keeps only rows where the condition is literally `true`. The row falls out of both sides. Validation rules written on the assumption that "everything that is not A is B" are quietly wrong on null; use `isnull` or `nvl` when you need the row back.
+
+#### 03 — `aggr`: collapse rows into groups
+
+`aggr` is where the output *structure* changes, not just the values, so the `semantic_analysis` line is worth reading before the data.
+
+```{.default .vtl}
+DS_out <- DS_1 [ aggr OBS_VALUE := avg(OBS_VALUE),
+                      N_COUNTRIES := count(OBS_VALUE)
+                 group by TIME_PERIOD ];
+```
+
+```
+--- computed output structure -----------------------------------
+DS_out: ID TIME_PERIOD:String | ME OBS_VALUE:Number, N_COUNTRIES:Integer
+
+--- DS_out ------------------------------------------------------
+TIME_PERIOD  OBS_VALUE  N_COUNTRIES
+       2020   4.866667            3
+       2021       5.45            2
+```
+
+Two rules did the work. `group by` takes **Identifiers**, and any Identifier not listed (`REF_AREA`) disappears from the result. And **Attributes do not survive aggregation**: `OBS_STATUS` is gone without being mentioned. Contrast the null handling with example 02: `filter` dropped the null row, whereas aggregate functions *skip* nulls — 2021 has three countries but `avg` divides by two, and `count(OBS_VALUE)` makes that visible.
+
+#### 04 — `inner_join`: matching on Identifiers, and the one shape VTL refuses
+
+Joins in VTL are not SQL joins. There is no join condition: Data Points are matched on their Identifiers, and one operand's key must *contain* the other's (the Reference Manual calls these the join "subcases"). Here a region mapping with `REF_AREA` as its only Identifier is joined to the observations, whose key is `{REF_AREA, TIME_PERIOD}`. The observations are the six rows from above with one change: DEU/2021 is 4.9 rather than missing, so no null gets in the way of the averages.
+
+```{.default .csv}
+REF_AREA,REGION
+FRA,ECS
+DEU,ECS
+BRA,LCN
+```
+
+```{.default .vtl}
+DS_j := inner_join(DS_1, DS_REGION);
+
+/* REGION arrived as a Measure, and `group by` only accepts Identifiers, so promote it.
+   `calc identifier X := X` changes a component's role without changing its values. */
+DS_out <- DS_j [ calc identifier REGION := REGION ]
+               [ aggr OBS_VALUE := avg(OBS_VALUE) group by REGION, TIME_PERIOD ];
+```
+
+```
+--- computed output structure -----------------------------------
+DS_j: ID REF_AREA:String, TIME_PERIOD:String | ME OBS_VALUE:Number, REGION:String | AT OBS_STATUS:String
+DS_out: ID TIME_PERIOD:String, REGION:String | ME OBS_VALUE:Number
+
+--- DS_out -- average by region and year ------------------------
+TIME_PERIOD REGION  OBS_VALUE
+       2020    ECS       4.35
+       2021    ECS       4.85
+       2020    LCN        5.9
+       2021    LCN        6.1
+```
+
+The consequence worth internalising is that **VTL cannot join a one-to-many mapping**. If a country belongs to several regions, the natural mapping table needs `{REF_AREA, REGION}` as its key, which is neither a subset nor a superset of `{REF_AREA, TIME_PERIOD}`. The example runs that script too, and the engine rejects it at the type-checking stage, before any data is read:
+
+```
+SemanticError 1-1-13-11
+  At op inner_join: Invalid subcase A, DS_1 should be a superset but REGION not found.
+```
+
+The way around it is modelling, not a workaround: keep **one row per country** and put each grouping in its own Measure column, then promote that column with `calc identifier` before grouping. Examples 12 and 13 scale exactly this device up to the real World Bank region hierarchy.
+
+#### 05 — `check`: validation produces data, not exceptions
+
+This is the mental shift that separates VTL validation from assertion-style checking. A failing rule does not raise. It returns a Data Set with one row per checked Data Point, carrying `bool_var`, `errorcode` and `errorlevel`. The input here has a negative value, a value over 100, and a missing value.
+
+```{.default .csv}
+REF_AREA,TIME_PERIOD,OBS_VALUE
+FRA,2020,4.5
+DEU,2020,-1.2
+BRA,2020,5.9
+USA,2020,120.0
+JPN,2020,
+```
+
+```{.default .vtl}
+/* `all` reports every Data Point with a bool_var; `invalid` reports only the failures. */
+DS_all     <- check(DS_1 >= 0 errorcode "NEGATIVE_SHARE" errorlevel 1 all);
+DS_invalid <- check(DS_1 >= 0 errorcode "NEGATIVE_SHARE" errorlevel 1 invalid);
+
+/* One `check` carries ONE errorcode and errorlevel. The two bounds could be combined with
+   `and` under a single code; keeping them apart lets each report its own code and level. */
+DS_over_100 <- check(DS_1 <= 100 errorcode "SHARE_OVER_100" errorlevel 2 invalid);
+```
+
+```
+--- DS_all -- every row, pass or fail ---------------------------
+REF_AREA TIME_PERIOD bool_var  imbalance      errorcode  errorlevel
+     FRA        2020     True       <NA>           <NA>        <NA>
+     DEU        2020    False       <NA> NEGATIVE_SHARE           1
+     BRA        2020     True       <NA>           <NA>        <NA>
+     USA        2020     True       <NA>           <NA>        <NA>
+     JPN        2020     <NA>       <NA>           <NA>        <NA>
+
+--- DS_invalid -- failures only (OBS_VALUE >= 0) ----------------
+REF_AREA TIME_PERIOD bool_var  imbalance      errorcode  errorlevel
+     DEU        2020    False       <NA> NEGATIVE_SHARE           1
+
+--- DS_over_100 -- failures only (OBS_VALUE <= 100) -------------
+REF_AREA TIME_PERIOD bool_var  imbalance      errorcode  errorlevel
+     USA        2020    False       <NA> SHARE_OVER_100           2
+```
+
+Watch JPN. Its `OBS_VALUE` is null, so `OBS_VALUE >= 0` is null — neither true nor false. In the `all` output it appears with a null `bool_var` and no error code, and in the `invalid` output it does not appear at all. **A null is never reported as invalid.** If missing data should be an error, you have to say so explicitly with `isnull`; this is the most common way a VTL validation suite reports a clean bill of health over data it never actually tested.
+
+#### 06 — `define datapoint ruleset`: named, reusable, multi-rule validation
+
+Example 05's `check` handles one boolean expression. A datapoint ruleset bundles several named rules, each with its own error code and level, that are checked *within a single Data Point* across its components. The input adds two large values, one flagged as an estimate (`E`) and one not.
+
+```{.default .csv}
+REF_AREA,TIME_PERIOD,OBS_VALUE,OBS_STATUS
+FRA,2020,4.5,A
+DEU,2020,-1.2,A
+BRA,2020,5.9,A
+USA,2020,120.0,A
+IND,2020,15.3,A
+CHN,2020,18.7,E
+JPN,2020,,M
+```
+
+```{.default .vtl}
+define datapoint ruleset share_checks (variable OBS_VALUE, OBS_STATUS) is
+
+    non_negative:
+        OBS_VALUE >= 0
+        errorcode "NEGATIVE_SHARE" errorlevel 1;
+
+    at_most_100:
+        OBS_VALUE <= 100
+        errorcode "SHARE_OVER_100" errorlevel 2;
+
+    /* Conditional rule. `when A then B` means `if A then B else true`,
+       so rows where the antecedent is false PASS rather than failing. */
+    large_values_are_estimates:
+        when OBS_VALUE > 10 then OBS_STATUS = "E"
+        errorcode "LARGE_VALUE_NOT_FLAGGED_ESTIMATE" errorlevel 3
+
+end datapoint ruleset;
+
+DS_report <- check_datapoint(DS_1, share_checks invalid);
+DS_full   <- check_datapoint(DS_1, share_checks all);
+```
+
+```
+--- computed output structures ----------------------------------
+DS_report: ID REF_AREA:String, TIME_PERIOD:String, ruleid:String | ME OBS_VALUE:Number, OBS_STATUS:String, errorcode:String, errorlevel:Number
+DS_full: ID REF_AREA:String, TIME_PERIOD:String, ruleid:String | ME bool_var:Boolean, errorcode:String, errorlevel:Number
+
+--- DS_report -- failures only ----------------------------------
+REF_AREA TIME_PERIOD                     ruleid  OBS_VALUE OBS_STATUS                        errorcode  errorlevel
+     DEU        2020               non_negative       -1.2          A                   NEGATIVE_SHARE         1.0
+     USA        2020                at_most_100      120.0          A                   SHARE_OVER_100         2.0
+     USA        2020 large_values_are_estimates      120.0          A LARGE_VALUE_NOT_FLAGGED_ESTIMATE         3.0
+     IND        2020 large_values_are_estimates       15.3          A LARGE_VALUE_NOT_FLAGGED_ESTIMATE         3.0
+
+7 observations x 3 rules -> 21 rows in the `all` report,
+of which 4 are failures.
+```
+
+Three things to notice. The report is *longer* than the input: `check_datapoint` emits one row per (Data Point, rule), so a `ruleid` Identifier joins the key. The `when … then` rule is not a filter: IND (15.3, status `A`) is flagged, CHN (18.7, status `E`) is not, and small values are never considered. And this example's structure declares `OBS_STATUS` as a **Measure** where examples 01–03 declared it an Attribute: `check_datapoint` copies only Identifiers and Measures into its report, so as an Attribute the very flag the third rule tests would be missing from the output. Roles are a modelling choice about what a rule may see, not a formality.
+
+::: callout-note
+A reading trap rather than an engine quirk: the VTL Reference Manual writes the syntax as `check_datapoint ( op , dpr { output } )`, where `{ output }` is a *placeholder* for `invalid | all | all_measures`, not a keyword to type. `check_datapoint(DS_1, dpr invalid)` is right; `dpr output invalid` is a syntax error. The same applies to `check_hierarchy`.
+:::
+
+#### 07 — `define hierarchical ruleset`: totals against their parts
+
+A datapoint rule reads one row. A hierarchical rule reads *several* rows and compares code values of one Identifier: "WLD must equal ECS plus LCN". The input holds five countries, two regional totals and a world total — and one of the totals is wrong.
+
+```{.default .csv}
+REF_AREA,TIME_PERIOD,OBS_VALUE
+FRA,2020,100
+DEU,2020,200
+ECS,2020,300
+BRA,2020,150
+ARG,2020,50
+LCN,2020,250
+WLD,2020,550
+```
+
+```{.default .vtl}
+/* `(variable rule REF_AREA)` says the codes in the rules are REF_AREA values. */
+define hierarchical ruleset region_totals (variable rule REF_AREA) is
+
+    ECS_total : ECS = FRA + DEU errorcode "ECS_MISMATCH" errorlevel 1;
+    LCN_total : LCN = BRA + ARG errorcode "LCN_MISMATCH" errorlevel 1;
+    WLD_total : WLD = ECS + LCN errorcode "WLD_MISMATCH" errorlevel 1
+
+end hierarchical ruleset;
+
+/* Validation mode: does the data satisfy the relations? */
+DS_report <- check_hierarchy(DS_1, region_totals invalid);
+DS_full   <- check_hierarchy(DS_1, region_totals all);
+
+/* The SAME ruleset in aggregation mode COMPUTES the parents from the children. */
+DS_computed <- hierarchy(DS_1, region_totals computed);
+```
+
+```
+--- DS_full -- every relation checked ---------------------------
+REF_AREA TIME_PERIOD    ruleid bool_var    errorcode  errorlevel  imbalance
+     ECS        2020 ECS_total     True         <NA>        <NA>        0.0
+     LCN        2020 LCN_total    False LCN_MISMATCH         1.0       50.0
+     WLD        2020 WLD_total     True         <NA>        <NA>        0.0
+
+--- DS_report -- failing relations only -------------------------
+REF_AREA TIME_PERIOD    ruleid  OBS_VALUE    errorcode  errorlevel  imbalance
+     LCN        2020 LCN_total      250.0 LCN_MISMATCH         1.0       50.0
+
+--- DS_computed -- parents derived from children ----------------
+REF_AREA TIME_PERIOD  OBS_VALUE
+     ECS        2020      300.0
+     LCN        2020      200.0
+     WLD        2020      500.0
+```
+
+The input says LCN = 250, but BRA + ARG = 200; the `imbalance` measure reports the gap of 50, so you learn *by how much*, not merely that something is wrong. Now compare the two modes on WLD — they disagree, and both are right. `check_hierarchy` says WLD **passes**: it compares 550 against the *stated* ECS + LCN (300 + 250), and each relation is checked in isolation. `hierarchy` computes WLD = **500**: it rebuilds LCN from its children first, then rolls that corrected value upward. A hierarchy can pass every check and still disagree with its own recomputation, so check the leaves, not just the totals.
+
+One limitation to keep in mind: hierarchical rulesets are **additive** — relations are built from `+` and `-` only. They can express "region total = sum of countries" but not an average, a weighted average or a ratio, which is why examples 12 and 13 compute regional averages with `inner_join` and `aggr` instead.
+
+#### 08 — `define operator`: reuse without repetition
+
+VTL has no loops, no variables and no recursion, so the only abstraction mechanisms are composition and user-defined operators: a named expression with typed parameters and optional defaults, invoked like a built-in. The input has one country with GDP = 0.
+
+```{.default .csv}
+REF_AREA,TIME_PERIOD,SPEND,GDP
+FRA,2020,120.0,2600.0
+DEU,2020,180.0,3800.0
+BRA,2020,95.0,1450.0
+ATL,2020,3.0,0.0
+```
+
+```{.default .vtl}
+/* `part` and `whole` are `component` parameters because they are called with Measures
+   of a Data Set; `scale` is a plain scalar, so it is `number`. */
+define operator share_of (part component, whole component, scale number default 100)
+  returns component is
+    if whole = 0 then null else part / whole * scale
+end operator;
+
+DS_out <- DS_1 [ calc SHARE_PCT := share_of(SPEND, GDP),
+                      SHARE_PER_MILLE := share_of(SPEND, GDP, 1000) ];
+```
+
+```
+--- DS_out ------------------------------------------------------
+REF_AREA TIME_PERIOD  SPEND     GDP  SHARE_PCT  SHARE_PER_MILLE
+     FRA        2020  120.0  2600.0   4.615385        46.153846
+     DEU        2020  180.0  3800.0   4.736842        47.368421
+     BRA        2020   95.0  1450.0   6.551724        65.517241
+     ATL        2020    3.0     0.0       <NA>             <NA>
+```
+
+The reason to reach for a UDO is not brevity but putting a rule in a single place. The zero-denominator guard lives inside `share_of`, so every call site gets it — including the ones written later by someone who never thought about ATL. Repeating `if GDP = 0 then null else …` at each call site would work until someone forgot once.
+
+#### What the pure-VTL examples taught
+
+| Example | Operators | The lesson |
+|---|---|---|
+| [01 calc](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/01_calc.vtl) | `calc` | Roles and types come from the structure; null propagates through arithmetic |
+| [02 filter, keep, rename](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/02_filter_keep_rename.vtl) | `filter`, `rename`, `keep` | Three-valued logic: a condition and its negation do not partition data containing nulls |
+| [03 aggr](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/03_aggregate.vtl) | `aggr`, `group by` | `group by` takes Identifiers; ungrouped Identifiers and all Attributes are dropped; aggregates skip nulls |
+| [04 join](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/04_join.vtl) | `inner_join`, `calc identifier` | Keys must nest; model one-to-many mappings as Measure columns |
+| [05 check](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/05_check.vtl) | `check` | Validation returns data, not exceptions; a null is never reported as invalid unless you test for it with `isnull` |
+| [06 datapoint ruleset](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/06_datapoint_ruleset.vtl) | `define datapoint ruleset`, `check_datapoint` | Named multi-rule validation; `when/then`; one result row per (row, rule) |
+| [07 hierarchical ruleset](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/07_hierarchical_ruleset.vtl) | `define hierarchical ruleset`, `check_hierarchy`, `hierarchy` | Totals vs parts; `imbalance`; validation and aggregation from one ruleset can disagree |
+| [08 user-defined operator](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/08_user_defined_operator.vtl) | `define operator` | Reuse without repetition; put the guard where no call site can forget it |
+
+### VTL and SDMX structures: a real World Bank dataflow
+
+The second tier keeps the language and swaps the toy inputs for real SDMX artefacts: the World Bank education dataflow `WB.DEC:DF_WDI_EDUCATION(1.2)` — 1169 observations of government education expenditure as a percentage of GDP (indicator `XPD_GOV`), for 186 countries over 2015–2021 — together with its actual DSD, `WB.DEC:DS_WDI_EDUCATION(1.2)`, which has 18 components: 11 dimensions including `TIME_PERIOD`, one measure, and six attributes.
+
+What changes when the structure comes from a DSD rather than a hand-written file:
+
+-   **No conversion step.** `run` and `semantic_analysis` accept a pysdmx `DataStructureDefinition` directly as `data_structures`, on its own or in a list mixed with JSON structure files.
+-   **The VTL Data Set name is the DSD id** (`DS_WDI_EDUCATION`), not the dataflow id. The script must refer to that name unless a mapping says otherwise (example 10).
+-   **`OBS_VALUE` is typed String in the DSD**, as SDMX structures very often do since the numeric facet is optional. VTL will not sum or average a String, so every script starts with `cast(OBS_VALUE, number)`. Doing this in VTL, rather than by patching the structure in Python, keeps the structure faithful to the registry and the fix visible in the script.
+-   **`TIME_PERIOD` is a real time type**, not a String. `TIME_PERIOD >= "2019"` is a type error; use a time operator such as `getyear(TIME_PERIOD) >= 2019`.
+
+::: callout-note
+**About the inputs.** The files under `inputs/sdmx/` were snapshotted once from the World Bank QA environment by the repository's `tools/fetch_inputs.py`; the examples themselves never touch the network. The country-to-region mapping used in example 12 was generated from the registry hierarchy `WB:H_WB_REGIONS(2.1)`, which differs from the published World Bank classification (in this artefact `SAS` holds only six countries, with Afghanistan and Pakistan under `MEA`). The examples do not silently correct it: they illustrate how to use VTL, and are not a source of World Bank statistics.
+:::
+
+#### 10 — `run_sdmx`: the SDMX-native entry point
+
+Example 09 in the repository shows `run` with a DSD (see the table at the end of this subsection). `run_sdmx` is the other front door: instead of a structure object and a dictionary of DataFrames, you hand it SDMX datasets and it works out the structures itself.
+
+```python
+from pathlib import Path
+from pysdmx.io import read_sdmx
+from pysdmx.io.pd import PandasDataset
+from vtlengine import run_sdmx
+
+SDMX = Path("inputs/sdmx")
+
+dsd     = read_sdmx(SDMX / "wdi_education_dataflow.xml").get_data_structure_definitions()[0]
+as_read = read_sdmx(SDMX / "wdi_education_data.xml").data[0]
+
+# A data message only REFERENCES its structure (as_read.structure is a URN string).
+# run_sdmx needs the structure itself, so rebuild the dataset with a resolved Schema.
+dataset = PandasDataset(structure=dsd.to_schema(), data=as_read.data)
+
+result = run_sdmx(
+    script=Path("examples/10_run_sdmx.vtl"),
+    datasets=[dataset],
+    mappings={dataset.short_urn: "EDU"},   # {SDMX artefact -> the name the script uses}
+)
+print(result["DS_out"].data)
+```
+
+```{.default .vtl}
+/* This script calls the dataset EDU, not DS_WDI_EDUCATION. The name is supplied by the
+   mapping passed to run_sdmx, which decouples the script from the artefact it runs over. */
+
+DS_out <- EDU [ calc OBS_VALUE := cast(OBS_VALUE, number) ]
+              [ aggr OBS_VALUE := avg(OBS_VALUE), N := count(OBS_VALUE)
+                group by TIME_PERIOD ];
+```
+
+```
+as read from the data file, structure is a str: Dataflow=WB.DEC:DF_WDI_EDUCATION(1.2)
+  -> that is a reference, not a structure. run_sdmx would reject it (0-1-3-2).
+rebuilt with a resolved Schema, short_urn = DataStructure=WB.DEC:DS_WDI_EDUCATION(1.2)
+
+--- DS_out -- mean education spend by year, all countries -------
+TIME_PERIOD  OBS_VALUE   N
+       2015    4.42324 164
+       2016   4.436638 163
+       2017   4.284997 171
+       2018   4.301843 166
+       2019   4.270503 167
+       2020   4.656587 170
+       2021    4.48813 168
+```
+
+Three things are easy to get wrong here, and the example demonstrates all three. The dataset's structure must be *resolved*: a dataset read from a data message carries its structure as a URN string, and passing that straight to `run_sdmx` fails. Without `mappings`, the Data Set name comes from the structure. With `mappings`, the dictionary goes *from* the SDMX artefact's short URN *to* the alias the script uses — the same script can then be pointed at a different dataflow without editing the VTL. Prefer `run` when you already hold structures and DataFrames; prefer `run_sdmx` when you are handed SDMX datasets and want the engine to do the wiring.
+
+#### 11 — Validating real data, and writing the report back out as SDMX
+
+Examples 05 and 06 validated hand-made rows where every violation was planted. This runs the same machinery over 1169 real observations, where nobody planted anything.
+
+```{.default .vtl}
+DS_num := DS_WDI_EDUCATION [ calc OBS_VALUE := cast(OBS_VALUE, number) ];
+
+define datapoint ruleset spending_plausibility (variable OBS_VALUE, UNIT_MEASURE) is
+
+    /* A hard constraint from the unit itself: a percentage of GDP cannot leave 0..100.
+       Conditioned on UNIT_MEASURE so the rule stays correct if the flow ever carries
+       observations in another unit. */
+    share_of_gdp_in_range:
+        when UNIT_MEASURE = "PT_GDP" then OBS_VALUE >= 0 and OBS_VALUE <= 100
+        errorcode "OUT_OF_RANGE" errorlevel 1;
+
+    /* Soft plausibility bounds. These encode an expectation about the indicator, and
+       everything they flag needs a human to look at it -- hence a separate errorlevel. */
+    implausibly_low:
+        OBS_VALUE >= 0.5
+        errorcode "IMPLAUSIBLY_LOW" errorlevel 2;
+
+    implausibly_high:
+        OBS_VALUE <= 12
+        errorcode "IMPLAUSIBLY_HIGH" errorlevel 2
+
+end datapoint ruleset;
+
+DS_report <- check_datapoint(DS_num, spending_plausibility invalid);
+```
+
+The runner reads the DSD and the data, runs the script, and then writes the report out as an SDMX artefact. That last step needs one thing the earlier examples did not: a validation report does *not* have the input's structure — it gains `ruleid`, `errorcode` and `errorlevel` — so there is no existing DSD to write it against. `convert_dataset_to_sdmx` builds one from the result's own components, given a `Reference` saying what the new structure should be called.
+
+```python
+from pathlib import Path
+from pysdmx.io import read_sdmx, write_sdmx
+from pysdmx.io.format import Format
+from pysdmx.model import Reference
+from pysdmx.toolkit.vtl import convert_dataset_to_sdmx
+from vtlengine import run, semantic_analysis
+
+SDMX = Path("inputs/sdmx")
+dsd  = read_sdmx(SDMX / "wdi_education_dataflow.xml").get_data_structure_definitions()[0]
+data = read_sdmx(SDMX / "wdi_education_data.xml").data[0].data
+
+script = Path("examples/11_validate_real_data.vtl")
+semantic_analysis(script=script, data_structures=dsd)
+result = run(script=script, data_structures=dsd, datapoints={dsd.id: data})
+report = result["DS_report"].data
+
+# The report has a new structure, so derive an SDMX one from the VTL result and name it.
+report_dataset = convert_dataset_to_sdmx(
+    result["DS_report"],
+    reference=Reference(sdmx_type="DataStructure", agency="WB",
+                        id="DS_EDU_VALIDATION_REPORT", version="1.0"),
+)
+write_sdmx(report_dataset, sdmx_format=Format.DATA_SDMX_CSV_2_0_0,
+           output_path="outputs/11_validation_report.csv")
+```
+
+```
+--- DS_report -- 22 flagged observations out of 1169 ------------
+REF_AREA INDICATOR SEX AGE EDUCATION_LEVEL INSTITUTION_TYPE ATTAINMENT_LEVEL EST_METHOD UNIT_MEASURE FREQ TIME_PERIOD          ruleid  OBS_VALUE       errorcode  errorlevel
+     SOM   XPD_GOV  _Z  _Z              _T               _T               _Z         _Z       PT_GDP    A        2018 implausibly_low   0.000004 IMPLAUSIBLY_LOW         2.0
+     SOM   XPD_GOV  _Z  _Z              _T               _T               _Z         _Z       PT_GDP    A        2019 implausibly_low   0.000006 IMPLAUSIBLY_LOW         2.0
+     SOM   XPD_GOV  _Z  _Z              _T               _T               _Z         _Z       PT_GDP    A        2020 implausibly_low   0.000006 IMPLAUSIBLY_LOW         2.0
+     SOM   XPD_GOV  _Z  _Z              _T               _T               _Z         _Z       PT_GDP    A        2021 implausibly_low   0.000007 IMPLAUSIBLY_LOW         2.0
+     NGA   XPD_GOV  _Z  _Z              _T               _T               _Z         _Z       PT_GDP    A        2015 implausibly_low   0.436955 IMPLAUSIBLY_LOW         2.0
+     NGA   XPD_GOV  _Z  _Z              _T               _T               _Z         _Z       PT_GDP    A        2016 implausibly_low   0.393046 IMPLAUSIBLY_LOW         2.0
+   ... 10 more rows ...
+TUV XPD_GOV _Z _Z _T _T _Z _Z PT_GDP A 2021 implausibly_high  15.515512 IMPLAUSIBLY_HIGH  2.0
+MHL XPD_GOV _Z _Z _T _T _Z _Z PT_GDP A 2020 implausibly_high  13.835037 IMPLAUSIBLY_HIGH  2.0
+MHL XPD_GOV _Z _Z _T _T _Z _Z PT_GDP A 2021 implausibly_high  15.182441 IMPLAUSIBLY_HIGH  2.0
+FSM XPD_GOV _Z _Z _T _T _Z _Z PT_GDP A 2015 implausibly_high   12.40792 IMPLAUSIBLY_HIGH  2.0
+FSM XPD_GOV _Z _Z _T _T _Z _Z PT_GDP A 2016 implausibly_high  13.814728 IMPLAUSIBLY_HIGH  2.0
+FSM XPD_GOV _Z _Z _T _T _Z _Z PT_GDP A 2017 implausibly_high  12.681582 IMPLAUSIBLY_HIGH  2.0
+[22 rows]
+
+Breakdown by rule:
+  implausibly_low                11
+  implausibly_high               11
+  share_of_gdp_in_range           0   <- ran, found nothing
+
+Wrote the report to outputs/11_validation_report.csv as SDMX-CSV 2.0
+```
+
+Two things change when the data is real. **A rule that finds nothing is still worth running**: `share_of_gdp_in_range` flags zero rows, which is the difference between "the data is within its unit's bounds" and "nobody checked". And **most findings are questions, not defects**: Somalia reporting 0.000004 percent of GDP is almost certainly a unit or reporting artefact, while a small island state at 15 percent is unusual but plausible. Validation output is a worklist, not a verdict, which is why the rules carry different error levels.
+
+#### 12 — Regional averages, entirely in VTL
+
+The job: turn 1169 country observations into one figure per World Bank region per year. The Python here does *no* data manipulation — it reads three files and calls `run`. Every join, promotion, grouping and stack lives in the `.vtl` file.
+
+The mapping input is shaped exactly as example 04 prescribed: one row per country, with each grouping in its own Measure column, so its key (`REF_AREA` alone) is a subset of the observations' key and the join is legal.
+
+```{.default .csv}
+REF_AREA,GEO_REGION,WORLD
+ABW,LCN,WLD
+AFG,MEA,WLD
+AGO,SSF,WLD
+ALB,ECS,WLD
+...
+```
+
+```{.default .vtl}
+DS_num := DS_WDI_EDUCATION [ calc OBS_VALUE := cast(OBS_VALUE, number) ];
+
+/* After the join the region columns are Measures. `group by` takes only Identifiers,
+   so promote them. This is the whole trick. */
+DS_wide := inner_join(DS_num, COUNTRY_REGION_MAP)
+             [ calc identifier GEO_REGION := GEO_REGION,
+                    identifier WORLD := WORLD ];
+
+/* Group by every identifier of the original DSD EXCEPT REF_AREA, plus the grouping
+   column -- then rename that column to REF_AREA. The result carries the input's
+   identifiers and measure, so it is writable against the same DSD. */
+DS_geo := DS_wide [ aggr OBS_VALUE := avg(OBS_VALUE)
+                    group by GEO_REGION, TIME_PERIOD, INDICATOR, SEX, AGE, EDUCATION_LEVEL,
+                             INSTITUTION_TYPE, ATTAINMENT_LEVEL, EST_METHOD, UNIT_MEASURE, FREQ ]
+                  [ rename GEO_REGION to REF_AREA ];
+
+DS_wld := DS_wide [ aggr OBS_VALUE := avg(OBS_VALUE)
+                    group by WORLD, TIME_PERIOD, INDICATOR, SEX, AGE, EDUCATION_LEVEL,
+                             INSTITUTION_TYPE, ATTAINMENT_LEVEL, EST_METHOD, UNIT_MEASURE, FREQ ]
+                  [ rename WORLD to REF_AREA ];
+
+/* Both halves now have identical structures, so they stack. */
+DS_out <- union(DS_geo, DS_wld);
+```
+
+```python
+from pathlib import Path
+from pysdmx.io import read_sdmx, write_sdmx
+from pysdmx.io.format import Format
+from pysdmx.io.pd import PandasDataset
+from vtlengine import run, semantic_analysis
+
+SDMX = Path("inputs/sdmx")
+dsd  = read_sdmx(SDMX / "wdi_education_dataflow.xml").get_data_structure_definitions()[0]
+data = read_sdmx(SDMX / "wdi_education_data.xml").data[0].data
+
+script = Path("examples/12_simple_regional_average.vtl")
+structures = [dsd, SDMX / "country_region_map_structure.json"]   # a DSD and a JSON file, mixed
+semantic_analysis(script=script, data_structures=structures)
+
+result = run(script=script, data_structures=structures,
+             datapoints={dsd.id: data,
+                         "COUNTRY_REGION_MAP": SDMX / "country_region_map.csv"})
+out = result["DS_out"].data
+
+# Same structure as the input, so it writes against the same DSD.
+write_sdmx(PandasDataset(structure=dsd.to_schema(), data=out),
+           sdmx_format=Format.DATA_SDMX_CSV_2_0_0,
+           output_path="outputs/12_regional_average.csv")
+```
+
+```
+--- computed output structure -----------------------------------
+DS_out: ID INDICATOR:String, SEX:String, AGE:String, EDUCATION_LEVEL:String, INSTITUTION_TYPE:String, ATTAINMENT_LEVEL:String, EST_METHOD:String, UNIT_MEASURE:String, FREQ:String, TIME_PERIOD:Time_Period, REF_AREA:String | ME OBS_VALUE:Number
+
+--- DS_out -- 56 regional observations --------------------------
+REF_AREA TIME_PERIOD  OBS_VALUE
+     MEA        2015   4.253299
+     MEA        2016   4.309729
+     MEA        2017    4.17432
+     MEA        2018   4.134815
+     ECS        2015    4.74156
+     ECS        2016   4.776572
+   ... 44 more rows ...
+WLD 2016  4.436638
+WLD 2017  4.284997
+WLD 2018  4.301843
+WLD 2019  4.270503
+WLD 2020  4.656587
+WLD 2021   4.48813
+[56 rows]
+
+Mean education spend (% of GDP) by region, 2021:
+  EAS    5.414
+  MEA    4.791
+  ECS    4.654
+  WLD    4.488
+  LCN    4.344
+  NAC    4.038
+  SAS    3.991
+  SSF    3.822
+
+Wrote 56 rows to outputs/12_regional_average.csv
+```
+
+Read the output structure line: the result has the DSD's Identifiers and Measure, with only the `REF_AREA` codes and values differing, which is what makes it writable against the same DSD. The DSD's six attributes are gone, because `aggr` drops attributes (example 03); SDMX-CSV does not require them. The obvious alternative — fanning the mapping out in pandas and handing VTL a pre-chewed frame — is exactly what modelling the groupings as Measure columns makes unnecessary.
+
+#### 14 — VTL as an SDMX artefact: the script becomes metadata
+
+Every example so far treated the `.vtl` file as source code. SDMX treats VTL as *metadata*: a `TransformationScheme` is a maintainable, versioned, registry-publishable artefact, with each statement a `Transformation` carrying its own result name and persistence flag. That is how VTL travels between institutions — you publish the scheme, not a text file. This example closes the loop with a deliberately small script:
+
+```{.default .vtl}
+DS_out <- DS_WDI_EDUCATION [ calc OBS_VALUE := cast(OBS_VALUE, number) ]
+                           [ aggr OBS_VALUE := avg(OBS_VALUE) group by TIME_PERIOD ];
+```
+
+```python
+from pathlib import Path
+import msgspec
+from pysdmx.io import read_sdmx, write_sdmx
+from pysdmx.io.format import Format
+from vtlengine import generate_sdmx, run, semantic_analysis
+
+SDMX = Path("inputs/sdmx")
+script = Path("examples/14_vtl_as_sdmx_artefacts.vtl")
+
+# 1. Source text -> SDMX artefact
+scheme = generate_sdmx(script=script, agency_id="WB", id="TS_EDU_MEAN", version="1.0")
+scheme = msgspec.structs.replace(scheme, id="TS_EDU_MEAN")   # see the note below
+
+# 2. Artefact -> SDMX-ML on disk
+destination = "outputs/14_transformation_scheme.xml"
+write_sdmx(scheme, sdmx_format=Format.STRUCTURE_SDMX_ML_2_1, output_path=destination)
+
+# 3. Read it back and RUN it, with no .vtl file involved
+reloaded = read_sdmx(destination).get_transformation_schemes()[0]
+dsd  = read_sdmx(SDMX / "wdi_education_dataflow.xml").get_data_structure_definitions()[0]
+data = read_sdmx(SDMX / "wdi_education_data.xml").data[0].data
+
+semantic_analysis(script=reloaded, data_structures=dsd)
+result = run(script=reloaded, data_structures=dsd, datapoints={dsd.id: data})
+print(result["DS_out"].data)
+```
+
+```
+generate_sdmx returned TransformationScheme: TransformationScheme=WB:TS1(1.0)
+  requested id 'TS_EDU_MEAN', got 'TS1' -- the id argument is ignored.
+  corrected via msgspec.structs.replace -> TransformationScheme=WB:TS_EDU_MEAN(1.0)
+
+1 Transformation(s) in the scheme:
+  T1: DS_out <- DS_WDI_EDUCATION[calc OBS_VALUE := cast(OBS_VALUE, number)][...
+
+Wrote the scheme to outputs/14_transformation_scheme.xml (1336 bytes)
+Read back: TransformationScheme=WB:TS_EDU_MEAN(1.0)
+
+--- computed output structure -----------------------------------
+DS_out: ID TIME_PERIOD:Time_Period | ME OBS_VALUE:Number
+
+--- DS_out -- executed from the SDMX artefact, not the .vtl file
+TIME_PERIOD  OBS_VALUE
+       2015    4.42324
+       2016   4.436638
+       2017   4.284997
+       2018   4.301843
+       2019   4.270503
+       2020   4.656587
+       2021    4.48813
+```
+
+The last step is the one that matters: `run` and `semantic_analysis` accept a `TransformationScheme` wherever they accept a path, so a scheme pulled from a registry executes without ever being written back to disk. The results are identical to example 10's yearly means, computed from the text file.
+
+::: callout-note
+Two rough edges of vtlengine 1.9.3, shown rather than hidden: `generate_sdmx` ignores its `id` argument and always names the scheme `TS1` (agency and version are honoured), which is why the example corrects the immutable object with `msgspec.structs.replace`; and Transformations are auto-named `T1`, `T2`, … in dependency order rather than after their results. Both are library behaviour, unrelated to the VTL standard.
+:::
+
+#### The two SDMX examples not walked through here
+
+| Example | What it adds |
+|---|---|
+| [09 SDMX in, SDMX out](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/09_sdmx_in_sdmx_out.py) | The whole loop with `run`: `read_sdmx` → `run(data_structures=dsd)` → `write_sdmx` as SDMX-CSV, with no glue code; `getyear()` on a typed `TIME_PERIOD` |
+| [13 weighted regional average](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/examples/13_weighted_regional_average.vtl) | Population-weighted means from two dataflows whose keys differ: `aggr` used to *reshape* the population key down to `{REF_AREA, TIME_PERIOD}` before a three-way `inner_join`; unweighted versus weighted 2021 means compared side by side |
+
+### VTL, SDMX, and data from an API
+
+::: callout-important
+**Coming in a later iteration.** The two subsections above read structures and data from files that were snapshotted once. In production the same inputs are fetched live, and this subsection will show that end to end. The intended content is:
+
+-   fetching the DSD and dataflow from a registry (FMR, or the .Stat Suite SDMX web service) with pysdmx's registry client rather than from an SDMX-ML file;
+-   fetching the observations over the SDMX REST API and getting them straight into the `PandasDataset` form that `run_sdmx` expects;
+-   running the script with `run_sdmx` and an explicit mapping from the fetched dataflow to the name used in the VTL;
+-   fetching a published `TransformationScheme` (and its `RulesetScheme`, if any) from the registry and executing it directly, closing the loop that example 14 opened;
+-   writing the results back out and uploading them to .Stat Suite, following the earlier chapters.
+
+Until then, `tools/fetch_inputs.py` in the repository shows how the snapshots were retrieved from the World Bank QA environment.
 :::
 
 ## Summary
 
 -   **VTL** is the SDMX standard for **declaratively** and **technology-neutrally** expressing **validation** and **transformation** rules for statistical data.
 -   It operates on **Data Sets** whose **Components** play **Identifier**, **Measure**, or **Attribute** roles — a model that aligns directly with SDMX.
--   It can **transform** data (clause operators, joins, aggregations, time operations, …) and **validate** data, where validation returns a result Data Set (via `check_datapoint` and `check_hierarchy`) rather than raising errors.
+-   It can **transform** data (clause operators, joins, aggregations, time operations, …) and **validate** data, where validation returns a result Data Set (via `check`, `check_datapoint` and `check_hierarchy`) rather than raising errors — and a null never fails a check.
 -   Logic is packaged into reusable **datapoint rulesets**, **hierarchical rulesets**, and **user-defined operators**, and assembled into **Transformation Schemes** that execute by data dependency, not textual order.
--   VTL **complements SDMX** by providing a shared, portable, metadata-native way to express the rules and calculations that bridge source data and published SDMX data.
+-   Running VTL always takes a **script**, the **data structures** and the **data points**; only where they come from changes — hand-written files, a DSD and dataflow read from SDMX-ML, or (next iteration) a registry and an API.
+-   VTL **complements SDMX** by providing a shared, portable, metadata-native way to express the rules and calculations that bridge source data and published SDMX data — to the point that a script can itself be stored and exchanged as an SDMX `TransformationScheme`.
 
 ## Further reading
 
--   [VTL 2.1 User Manual and Reference Manual](https://sdmx-twg.github.io/vtl/v2.1/) — the normative specification (User Manual for concepts and the information model; Reference Manual for the operator library).
+-   [VTL specification](https://sdmx-twg.github.io/vtl/) — the normative User Manual (concepts and the information model) and Reference Manual (the operator library); [version 2.1](https://sdmx-twg.github.io/vtl/v2.1/) is the one the engine used here implements.
 -   [VTL specification repository](https://github.com/sdmx-twg/vtl) — grammar, technical notes, and worked examples.
+-   [vtl-toy-pipeline](https://github.com/WB-DECIS/vtl-toy-pipeline) — the fourteen runnable examples this chapter is built on.
+-   [vtlengine documentation](https://docs.vtlengine.meaningfuldata.eu) — the Python engine: `run`, `run_sdmx`, `semantic_analysis`, the JSON structure format, and error codes.
+-   [pysdmx documentation](https://py.sdmx.io) — reading and writing SDMX-ML and SDMX-CSV, registry access, and the VTL artefact classes.
