@@ -218,7 +218,7 @@ Two conventions from the repository carry over to this chapter. First, **the `.v
 
 ### Pure VTL: toy data and hand-written structures
 
-The eight examples in this subsection share one tiny dataset: government education spending as a percentage of GDP for three countries and two years, with one deliberately missing value.
+The examples in this subsection use tiny datasets of the same kind: government education spending as a percentage of GDP for a handful of countries and years. Examples 01 to 03 share the one below, which has one deliberately missing value; from example 04 onwards, each example shows its own input wherever it differs.
 
 ```{.default .csv}
 REF_AREA,TIME_PERIOD,OBS_VALUE,OBS_STATUS
@@ -360,7 +360,7 @@ Two rules did the work. `group by` takes **Identifiers**, and any Identifier not
 
 #### 04 — `inner_join`: matching on Identifiers, and the one shape VTL refuses
 
-Joins in VTL are not SQL joins. There is no join condition: Data Points are matched on their Identifiers, and one operand's key must *contain* the other's (the Reference Manual calls these the join "subcases"). Here a region mapping with `REF_AREA` as its only Identifier is joined to the observations, whose key is `{REF_AREA, TIME_PERIOD}`.
+Joins in VTL are not SQL joins. There is no join condition: Data Points are matched on their Identifiers, and one operand's key must *contain* the other's (the Reference Manual calls these the join "subcases"). Here a region mapping with `REF_AREA` as its only Identifier is joined to the observations, whose key is `{REF_AREA, TIME_PERIOD}`. The observations are the six rows from above with one change: DEU/2021 is 4.9 rather than missing, so no null gets in the way of the averages.
 
 ```{.default .csv}
 REF_AREA,REGION
@@ -418,7 +418,8 @@ JPN,2020,
 DS_all     <- check(DS_1 >= 0 errorcode "NEGATIVE_SHARE" errorlevel 1 all);
 DS_invalid <- check(DS_1 >= 0 errorcode "NEGATIVE_SHARE" errorlevel 1 invalid);
 
-/* `check` takes ONE boolean expression, so the upper bound is a separate check. */
+/* One `check` carries ONE errorcode and errorlevel. The two bounds could be combined with
+   `and` under a single code; keeping them apart lets each report its own code and level. */
 DS_over_100 <- check(DS_1 <= 100 errorcode "SHARE_OVER_100" errorlevel 2 invalid);
 ```
 
