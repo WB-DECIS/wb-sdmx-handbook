@@ -5,7 +5,7 @@
     "content_category": "site"
   },
   "quarto": {
-    "version": "1.9.36",
+    "version": "1.10.18",
     "engines": [
       "markdown"
     ]
@@ -13,9 +13,6 @@
   "files": {
     ".gitignore": {
       "checksum": "a4eba6ae756f2c43eb5fd56a1b12e3c0"
-    },
-    ".positai/settings.json": {
-      "checksum": "92055d5bed2e1bcc2dc7896e59631187"
     },
     "00-how-to-create-a-dataflow.qmd": {
       "checksum": "773c4017ff556ed324a5a9fd9bc4a8e3"
@@ -33,7 +30,10 @@
       "checksum": "45e7dbcf0d6edcf7ecb41ce911e3b107"
     },
     "04-introduction-to-vtl.qmd": {
-      "checksum": "baa3ac8cbf0b7ad927f0ee57fb2dcce5"
+      "checksum": "0f6815ef177319da914424cd13cc3ad3"
+    },
+    "README.md": {
+      "checksum": "080f2fe94d212c1a7eb542fdbc829d6f"
     },
     "_quarto.yml": {
       "checksum": "66c5158ff001bb6510ea0adedf674cb9"
