@@ -13,6 +13,7 @@ book:
     - 02-how-to-create-a-data-pipeline.qmd
     - 03-data-pipeline-using-fmr-and-pysdmx.qmd
     - 04-introduction-to-vtl.qmd
+    - 05-working-with-the-sdmx-rest-api.qmd
     - summary.qmd
     - references.qmd
 

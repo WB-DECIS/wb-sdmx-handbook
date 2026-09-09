@@ -952,7 +952,7 @@ Two rough edges of vtlengine 1.9.3, shown rather than hidden: `generate_sdmx` ig
 -   fetching a published `TransformationScheme` (and its `RulesetScheme`, if any) from the registry and executing it directly, closing the loop that example 14 opened;
 -   writing the results back out and uploading them to .Stat Suite, following the earlier chapters.
 
-Until then, `tools/fetch_inputs.py` in the repository shows how the snapshots were retrieved from the World Bank QA environment.
+Until then, `tools/fetch_inputs.py` in the repository shows how the snapshots were retrieved from the World Bank QA environment. The REST side — how the URLs that fetch structures and observations are built — is covered in the next chapter, *Working with the SDMX REST API*.
 :::
 
 ## Summary
