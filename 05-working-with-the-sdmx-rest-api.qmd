@@ -123,10 +123,10 @@ Each position accepts four spellings, and they can be mixed freely across positi
 `TIME_PERIOD` is a dimension, but a special one: the **time dimension**, which SDMX places at the observation level rather than in the series key. A series is "Australia, gross fixed capital formation, OECD base-year prices"; its observations are that series' values for 2015, 2016, and so on. The key identifies series, so time is filtered elsewhere — in the query string, with the component filter `c[...]`:
 
 ```
-?c[TIME_PERIOD]=ge:2015+le:2021
+?c[TIME_PERIOD]=ge:2015%2Ble:2021
 ```
 
-`c[...]` names a component and applies operators to it. `ge` is "greater than or equal", `le` "less than or equal", and the `+` between them is AND. Because a `+` in a query string is decoded by web servers as a space, it must be sent as `%2B`; chapter 01's example carries exactly that `%2B`. The same parameter works for any component, and it is also the only way to filter on an attribute or a measure. Its grammar is *not* the key's grammar, and the two contradict each other on the one character they share:
+`c[...]` names a component and applies operators to it. `ge` is "greater than or equal", `le` "less than or equal", and the AND between them is a `+` — which is why the URL above spells it `%2B`: a bare `+` in a query string is decoded by web servers as a space, so it must always be sent encoded, as chapter 01's example does. The same parameter works for any component, and it is also the only way to filter on an attribute or a measure. Its grammar is *not* the key's grammar, and the two contradict each other on the one character they share:
 
 | | In the key (path) | In `c[...]` (query string) |
 |---|---|---|
@@ -301,7 +301,7 @@ dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,V,2015,18
 dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,VOB,2015,19
 ```
 
-Current prices (`C`), constant prices at the national base year (`V`) and at the OECD base year (`VOB`). The `+` sits *inside* the third position; the key still has two dots and three positions. The operator works in any position and in several at once: `AUS.P51+P5.C+V` asks for two transactions times two measures, four series. In the path, `+` is a literal character and must not be encoded — the opposite of what the query string needs, as example 05 shows. **`+` means "any of these" inside a single position and never crosses a dot.**
+Current prices (`C`), constant prices at the national base year (`V`) and at the OECD base year (`VOB`). The `+` sits *inside* the third position; the key still has two dots and three positions. The operator works in any position and in several at once: `AUS.P51+P31S14.C+V` asks for two transactions (gross fixed capital formation and final consumption expenditure of households) times two measures, four series, all four of which are in the export. In the path, `+` is a literal character and must not be encoded — the opposite of what the query string needs, as example 05 shows. **`+` means "any of these" inside a single position and never crosses a dot.**
 
 #### 04 — the empty position: a wildcard that keeps the dots
 
@@ -364,7 +364,7 @@ dataflow,OECD:SNA_TABLE1(1.0),I,AUS,B1GC_E,V,2015,5
 [43 rows]
 ```
 
-`c[TIME_PERIOD]=ge:2015+le:2015` reads "`TIME_PERIOD` at or after 2015 *and* at or before 2015". Inside `c[...]`, `+` joins two conditions with AND, and because a `+` in a query string is decoded as a space it must travel as `%2B`; chapter 01's example carries the same `%2B`. Shift the window and the answer is empty: `c[TIME_PERIOD]=ge:2016` matches none of the 43 rows, and a well-behaved service says so with `204 No Content` (older .Stat releases answer `404` with a "no results" message). Add `lastNObservations=1` to any of these queries and each series is cut down to its most recent observation, which is the usual way to ask "what is the latest value?" without knowing the year. **Time is filtered in the query string, not in the path; inside `c[...]`, `+` is AND and travels as `%2B`.**
+`c[TIME_PERIOD]=ge:2015%2Ble:2015` reads "`TIME_PERIOD` at or after 2015 *and* at or before 2015". Inside `c[...]`, `+` joins two conditions with AND, and because a `+` in a query string is decoded as a space it must travel as `%2B`; chapter 01's example carries the same `%2B`. Shift the window and the answer is empty: `c[TIME_PERIOD]=ge:2016` matches none of the 43 rows, and a well-behaved service says so with `204 No Content` (older .Stat releases answer `404` with a "no results" message). Add `lastNObservations=1` to any of these queries and each series is cut down to its most recent observation, which is the usual way to ask "what is the latest value?" without knowing the year. **Time is filtered in the query string, not in the path; inside `c[...]`, `+` is AND and travels as `%2B`.**
 
 #### 06 — the same query in another representation
 
