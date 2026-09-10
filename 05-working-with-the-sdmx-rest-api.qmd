@@ -23,13 +23,13 @@ Read it from left to right. Every segment narrows the request, and the one that 
 
 ```{mermaid}
 flowchart LR
-    B["#123;NSI#125;<br/>the entry point of one data space"] --> V["/rest/v2<br/>REST API version 2<br/>(the SDMX 3.0 grammar)"]
+    B["{NSI}<br/>the entry point of one data space"] --> V["/rest/v2<br/>REST API version 2<br/>(the SDMX 3.0 grammar)"]
     V --> R["/data<br/>resource"]
     R --> C["/dataflow<br/>context"]
     C --> A["/OECD/SNA_TABLE1/1.0<br/>agency / id / version"]
     A --> K["/AUS.P51.VOB<br/>series key"]
-    K --> Q["?c#91;TIME_PERIOD#93;=ge:2015%2Ble:2015<br/>query string"]
-    H["Accept: application/vnd.sdmx.data+csv#59;version=2.0<br/>an HTTP header, not part of the URL"] -.-> R
+    K --> Q["?c[TIME_PERIOD]=ge:2015%2Ble:2015<br/>query string"]
+    H["Accept: application/vnd.sdmx.data+csv;version=2.0<br/>an HTTP header, not part of the URL"] -.-> R
 
     classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
     class K vtl;
@@ -60,7 +60,7 @@ Most work is done with two resources, and a third is useful once you build a use
 flowchart TD
     Q{"What do you need?"} -->|"the shape: DSD, codelists, dimension order"| S["structure<br/>/rest/v2/structure/…"]
     Q -->|"the observations"| D["data<br/>/rest/v2/data/…"]
-    Q -->|"sources, notes, methodology"| M["data, with attributes=msd #38; measures=none<br/>referential metadata"]
+    Q -->|"sources, notes, methodology"| M["data, with attributes=msd & measures=none<br/>referential metadata"]
     Q -->|"which codes actually have data"| AV["availability<br/>/rest/v2/availability/…<br/>(check on your instance)"]
 
     classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
@@ -91,7 +91,7 @@ flowchart LR
     P1 --> K1["AUS"]
     P2 --> K2["P51"]
     P3 --> K3["VOB"]
-    T --> C["?c#91;TIME_PERIOD#93;=…<br/>query string, never the key"]
+    T --> C["?c[TIME_PERIOD]=…<br/>query string, never the key"]
     K1 -.- K["AUS.P51.VOB"]
     K2 -.- K
     K3 -.- K
@@ -162,7 +162,7 @@ flowchart TD
     R["Send the request"] --> S{"HTTP status?"}
     S -->|"200"| OK["Parse the body"]
     S -->|"204, or an empty body"| E["Valid query, no data:<br/>check the codes and the time window"]
-    S -->|"400"| B["Syntax:<br/>count the dots, check c#91;…#93;"]
+    S -->|"400"| B["Syntax:<br/>count the dots, check c[…]"]
     S -->|"404"| N["Not found:<br/>agency, id, version"]
     S -->|"406"| A["Format:<br/>change the Accept header"]
     S -->|"414"| L["URL too long:<br/>split the + list"]
