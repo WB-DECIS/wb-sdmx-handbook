@@ -1,0 +1,659 @@
+# Working with the SDMX REST API
+
+Every SDMX service we use at the World Bank — the .Stat Suite web service (the **NSI**) that serves each of our data spaces, and the **FMR** registry that holds our structures — answers the same kind of URL: the **SDMX REST API**. It is a small language. There are five resources, one path grammar, a dozen query parameters and one HTTP header. What makes it hard is that the grammar is *positional*: a data query names the values it wants by their position in the DSD, and nothing in the URL says which position is which. Get one dot wrong and the service answers with a bare `400`.
+
+This chapter is in two parts. The first part, *The syntax logic*, explains how a query URL is put together, where each piece comes from, and why time is not where you expect it. The second part, [The REST API in practice](#the-rest-api-in-practice), turns that into thirteen queries of increasing size, starting on a dataflow with three dimensions and ending on one with ten.
+
+::: callout-note
+**How to read this chapter.** Read the concepts first; they are short, and every example refers back to them. Then work through the practice half in order: each example adds one thing to the one before it. The first tier runs on `OECD:SNA_TABLE1(1.0)`, the dataflow that chapters 00 and 01 uploaded to our QA .Stat instance, so its DSD, its codelists and an export of its data sit in this handbook's `inputs/` folder. The second tier runs on the World Bank education dataflow of the VTL chapter. One word to settle before starting: in this chapter the **key** is the dot-separated string in the URL path that identifies a slice of a dataflow. It never contains `TIME_PERIOD`, whereas the VTL key of the previous chapter does.
+:::
+
+## The syntax logic
+
+### One URL, read from left to right
+
+Here is the query that chapter 01 used to fetch referential metadata, reduced to a plain data query:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.VOB?c[TIME_PERIOD]=ge:2015%2Ble:2015
+Accept: application/vnd.sdmx.data+csv;version=2.0
+```
+
+Read it from left to right. Every segment narrows the request, and the one that does the real work — the **series key** — sits at the end of the path:
+
+```{mermaid}
+flowchart LR
+    B["{NSI}<br/>the entry point of one data space"] --> V["/rest/v2<br/>REST API version 2<br/>(the SDMX 3.0 grammar)"]
+    V --> R["/data<br/>resource"]
+    R --> C["/dataflow<br/>context"]
+    C --> A["/OECD/SNA_TABLE1/1.0<br/>agency / id / version"]
+    A --> K["/AUS.P51.VOB<br/>series key"]
+    K --> Q["?c[TIME_PERIOD]=ge:2015%2Ble:2015<br/>query string"]
+    H["Accept: application/vnd.sdmx.data+csv;version=2.0<br/>an HTTP header, not part of the URL"] -.-> R
+
+    classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
+    class K vtl;
+```
+
+| Segment | What goes there | In this chapter |
+|---|---|---|
+| host | the entry point of one .Stat data space (`{NSI}`), or of the registry (`{FMR}`) | placeholders; the QA hosts are listed in [Where the World Bank services are](#where-the-world-bank-services-are) |
+| `/rest/v2` on the NSI, `/sdmx/v2` on FMR | version 2 of the REST API, which is the grammar defined for SDMX 3.0. `/rest` without `v2` is version 1, the SDMX 2.1 grammar (example 12) | always `v2`, except in example 12 |
+| resource | `data`, `structure`, `availability`, `schema` or `metadata` | `data` and `structure` |
+| context | for `data` and `availability`: `datastructure`, `dataflow`, `provisionagreement` or `*`. For `structure`: the type of artefact instead — `dataflow`, `datastructure`, `codelist`, `conceptscheme`, … | `dataflow`, so that the dataflow's constraints apply |
+| agency / id / version | the triple that identifies every maintainable artefact. The version accepts `1.0`, and in SDMX 3.0 also `+` (latest stable), `~` (latest, drafts included) and `*` (all) — confirm the shortcuts on your instance | explicit versions |
+| key | the series key, for `data` and `availability` only: one position per dimension of the DSD | the subject of the next three sections |
+| query string | for `data`: `c[...]`, `attributes`, `measures`, `dimensionAtObservation`, `firstNObservations`, `lastNObservations`, `updatedAfter`, `includeHistory`. For `structure`: `references` and `detail` | a few of each |
+| `Accept` header | the format of the answer; it travels with the request, never in the URL | CSV, JSON, or a structure format |
+
+Two things are worth fixing in mind now. **The path selects and the header formats**: nothing in the URL says CSV or JSON. And **one grammar serves every resource**: swap `data` for `structure` and the agency/id/version triple now names the artefact you want rather than the dataflow you want data from.
+
+::: callout-tip
+**Three version numbers that have nothing to do with each other.** `/rest/v2` is version 2 of the *REST API*, the grammar written for SDMX 3.0 (`/rest` alone is version 1, the SDMX 2.1 grammar). `version=2.0` in the `Accept` header is the version of the *message format*, here SDMX-CSV 2.0, and the standard also accepts the fuller spelling `version=2.0.0`. And the "SDMX-ML 2.1" you pick in FMR's download dialog in chapter 00 is the version of the *structure file format*. Readers conflate the three constantly; the services do not.
+:::
+
+### Three resources, one grammar
+
+Most work is done with two resources, and a third is useful once you build a user interface:
+
+```{mermaid}
+flowchart TD
+    Q{"What do you need?"} -->|"the shape: DSD, codelists, dimension order"| S["structure<br/>/rest/v2/structure/…"]
+    Q -->|"the observations"| D["data<br/>/rest/v2/data/…"]
+    Q -->|"sources, notes, methodology"| M["data, with attributes=msd & measures=none<br/>referential metadata"]
+    Q -->|"which codes actually have data"| AV["availability<br/>/rest/v2/availability/…<br/>(check on your instance)"]
+
+    classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
+    class D vtl;
+```
+
+| You need | Resource | Example |
+|---|---|---|
+| the shape of a dataflow: its DSD, its codelists, the dimension order | `structure` | `{NSI}/rest/v2/structure/dataflow/OECD/SNA_TABLE1/1.0?references=descendants&detail=referencepartial` |
+| one codelist, or one code in it | `structure` | `{NSI}/rest/v2/structure/codelist/OECD/CL_SNA_TABLE1__MEASURE/1.0`, and add `/VOB` for a single code |
+| every dataflow the service publishes, as stubs | `structure` | `{NSI}/rest/v2/structure/dataflow/*/*/*?detail=allstubs` |
+| observations | `data` | `{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.VOB` |
+| referential metadata attached to the data | `data`, with `attributes=msd&measures=none` | example 13 |
+| the codes that still have data given a partial key | `availability` | `{NSI}/rest/v2/availability/dataflow/OECD/SNA_TABLE1/1.0/AUS../MEASURE` — check on your instance |
+
+`schema` returns the validation rules of a dataflow as an XML or JSON schema, and `metadata` serves SDMX 3.0 metadata sets; neither appears in this chapter. Two things separate the `structure` resource from the others: its context segment is the *type* of artefact (`dataflow`, `codelist`, …) rather than `dataflow`/`datastructure`, and it has no key. Its two parameters are frequently confused. `detail` says how much of the *matching* artefact to return (`full`, `allstubs`, `referencepartial`, …); `references` says which *other* artefacts to pull in alongside it (`none`, `children`, `descendants`, `parents`, `all`, or one artefact type). `references=descendants&detail=referencepartial` is the idiom for "the dataflow and everything it needs, trimmed to the codes it uses".
+
+### The DSD is the key's template
+
+A DSD's `DimensionList` is an *ordered* list. Each dimension has a `position`, and the key of a data query is nothing more than that list written out: position 1 of the key holds a value of dimension 1, position 2 a value of dimension 2, and so on, joined by dots. That is the whole rule, and it is why the first query of any data pull is a `structure` query. For `OECD:DSD_SNA_TABLE1(1.0)`, the DSD behind `SNA_TABLE1`, the list is short:
+
+```{mermaid}
+flowchart LR
+    DSD["DSD OECD:DSD_SNA_TABLE1(1.0)<br/>DimensionList"] --> P1["position 1<br/>LOCATION"]
+    DSD --> P2["position 2<br/>TRANSACT"]
+    DSD --> P3["position 3<br/>MEASURE"]
+    DSD --> T["TIME_PERIOD<br/>time dimension"]
+    P1 --> K1["AUS"]
+    P2 --> K2["P51"]
+    P3 --> K3["VOB"]
+    T --> C["?c[TIME_PERIOD]=…<br/>query string, never the key"]
+    K1 -.- K["AUS.P51.VOB"]
+    K2 -.- K
+    K3 -.- K
+
+    classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
+    class DSD vtl;
+```
+
+| Position | Dimension | Codelist | Value in `AUS.P51.VOB` |
+|---|---|---|---|
+| 1 | `LOCATION` | `OECD:CL_LOCATION(1.0)` | `AUS` — Australia |
+| 2 | `TRANSACT` | `OECD:CL_SNA_TABLE1__TRANSACT(1.0)` | `P51` — Gross fixed capital formation |
+| 3 | `MEASURE` | `OECD:CL_SNA_TABLE1__MEASURE(1.0)` | `VOB` — Constant prices, OECD base year |
+| — | `TIME_PERIOD` | none: a time dimension | not in the key; filtered with `c[TIME_PERIOD]` |
+
+Each position accepts four spellings, and they can be mixed freely across positions:
+
+| You want | Write | Example |
+|---|---|---|
+| one value | the code | `AUS.P51.VOB` |
+| any of several values | the codes joined with `+` | `AUS.P51.C+V+VOB` |
+| any value | nothing between the dots, or `*` | `AUS.P51.` or `AUS.P51.*` |
+| everything in the dataflow | `*` as the whole key, or no key segment at all | `.../SNA_TABLE1/1.0/*` |
+
+`all` is the SDMX 2.1 spelling of "everything" and `latest` the 2.1 spelling of the newest version; in SDMX 3.0 both became `*` and `~`, and many services still accept the old words. Whatever you write, **the number of dots never changes**: a three-dimension DSD always gets a key with two dots, unless the whole key is `*`. Two more facts about the positions. Codes are case-sensitive and come from the codelists the DSD references, which is why the `structure` query in example 01 asks for the codelists too. And .Stat applies the dataflow's **content constraint** to every data query by default, so `detail=referencepartial` in that same query shows you not the full codelists but exactly the codes you are allowed to ask for.
+
+### Why time is not in the key
+
+`TIME_PERIOD` is a dimension, but a special one: the **time dimension**, which SDMX places at the observation level rather than in the series key. A series is "Australia, gross fixed capital formation, OECD base-year prices"; its observations are that series' values for 2015, 2016, and so on. The key identifies series, so time is filtered elsewhere — in the query string, with the component filter `c[...]`:
+
+```
+?c[TIME_PERIOD]=ge:2015%2Ble:2021
+```
+
+`c[...]` names a component and applies operators to it. `ge` is "greater than or equal", `le` "less than or equal", and the AND between them is a `+` — which is why the URL above spells it `%2B`: a bare `+` in a query string is decoded by web servers as a space, so it must always be sent encoded, as chapter 01's example does. The same parameter works for any component, and it is also the only way to filter on an attribute or a measure. Its grammar is *not* the key's grammar, and the two contradict each other on the one character they share:
+
+| | In the key (path) | In `c[...]` (query string) |
+|---|---|---|
+| selects | dimensions, by position | any component, by name: dimensions, `TIME_PERIOD`, attributes, measures |
+| OR | `+` | `,` |
+| AND | not needed: one position holds one dimension | `+` between clauses, sent as `%2B` |
+| operators | none | `eq` (the default), `ne`, `lt`, `le`, `gt`, `ge`, `co` (contains), `nc`, `sw` (starts with), `ew` |
+| example | `AUS.P51.C+V` | `c[MEASURE]=C,V` |
+| wildcard | empty position or `*` | leave the component out |
+
+Both can appear in one query: the key pins the dimensions you know the position of, `c[TIME_PERIOD]` adds the window. Example 11 shows the two filtering the same dimension side by side.
+
+### Asking for a format
+
+The format is negotiated with the `Accept` header. The media types are versioned, and the version is that of the message format, not of the REST API:
+
+| `Accept` | What comes back | Seen where |
+|---|---|---|
+| `application/vnd.sdmx.data+csv;version=2.0` | SDMX-CSV 2.0: one observation per row; the columns `STRUCTURE`, `STRUCTURE_ID`, `ACTION`, then the dimensions in DSD order, `TIME_PERIOD`, `OBS_VALUE`, then the attributes | the data exports in `inputs/` |
+| `application/vnd.sdmx.data+json;version=2.0` | SDMX-JSON 2.0: a `structures` block with codes *and names*, a `dataSets` block with the values | chapter 01, against the World Bank NSI |
+| `application/vnd.sdmx.data+xml;version=3.0.0` | SDMX-ML 3.0 structure-specific data | the standard |
+| `application/vnd.sdmx.genericdata+xml;version=2.1` | SDMX-ML 2.1 generic data, the older and most verbose form; the format of the companion repository's snapshots | the SDMX 2.1 dialect's default (example 12) |
+| `application/vnd.sdmx.structure+xml;version=3.0.0`, `application/vnd.sdmx.structure+json;version=2.0.0` | structure messages | FMR's default answer (example 08) |
+
+CSV is the right default for anything that ends up in a data frame; JSON when you want code labels without a second query; XML when a tool downstream expects SDMX-ML. Always send an `Accept` header: a service left to choose may answer with SDMX-ML 2.1 generic data, the most verbose format there is.
+
+### Reading the answer
+
+The status code is the first thing to read, and for a data query it usually tells you which part of the URL to look at:
+
+```{mermaid}
+flowchart TD
+    R["Send the request"] --> S{"HTTP status?"}
+    S -->|"200"| OK["Parse the body"]
+    S -->|"204, or an empty body"| E["Valid query, no data:<br/>check the codes and the time window"]
+    S -->|"400"| B["Syntax:<br/>count the dots, check c[…]"]
+    S -->|"404"| N["Not found:<br/>agency, id, version"]
+    S -->|"406"| A["Format:<br/>change the Accept header"]
+    S -->|"414"| L["URL too long:<br/>split the + list"]
+
+    classDef vtl fill:#e1f5fe,stroke:#039be5,stroke-width:2px,font-weight:bold;
+    class S vtl;
+```
+
+| Status | Meaning | First thing to check |
+|---|---|---|
+| `200 OK` | data follows | — |
+| `204 No Content` | the query is valid and matches nothing | the codes in the key, then the time window. Older .Stat releases answer `404` with a "no results found" message instead |
+| `400 Bad Request` | the URL does not parse | the number of dots against the DSD; then the `c[...]` operators |
+| `401` / `403` | the data space requires authentication, or you are not allowed to read it | your token; see the .Stat authentication documentation |
+| `404 Not Found` | the artefact does not exist on this service | agency, id and version, by running a `structure` query for it |
+| `406 Not Acceptable` | the service cannot produce the format you asked for | the `Accept` header; fall back to an older media type |
+| `414 URI Too Long` | the URL is too long, usually a very long `+` list | split the request, or move the list to `c[...]` |
+| `422 Unprocessable Content` | the URL parses but makes no sense here, such as an operator the component's type does not support | the `c[...]` clauses |
+| `500` / `503` | the service failed or is down | retry later; report the full URL if it persists |
+
+### Where the World Bank services are
+
+::: callout-note
+**Entry points.** Every .Stat data space has its own NSI web service, and the examples write its host as `{NSI}`; the registry is written `{FMR}`. The QA entry points used by this handbook and its companion repository are:
+
+-   `https://archivensiserviceqa.asestg.worldbank.org` — the NSI of the *archive* space, where chapter 01 uploaded `OECD:SNA_TABLE1(1.0)`. This is `{NSI}` in examples 01 to 07 and 13.
+-   `https://designnsiserviceqa.asestg.worldbank.org` — the NSI of the *design* space, from which `tools/fetch_inputs.py` in the [vtl-toy-pipeline](https://github.com/WB-DECIS/vtl-toy-pipeline) repository snapshotted the WDI data. This is `{NSI}` in examples 08 to 12.
+-   `https://fmrqa.worldbank.org/FMR` — the QA FMR, which serves structures under `{FMR}/sdmx/v2/`. This is where examples 08 and 10 read their DSDs.
+
+Production spaces have their own hosts, and the QA hosts may only be reachable from the World Bank network. The .Stat NSI exposes both grammars on every space: SDMX 3.0 under `/rest/v2/` and SDMX 2.1 under `/rest/`.
+:::
+
+## The REST API in practice
+
+The examples below are grouped in two tiers. The grammar is the same in both; what changes is the size of the DSD and where the structures and data come from:
+
+| Subsection | Dataflow | Positions in the key | Structures from | Data from |
+|---|---|---|---|---|
+| A three-dimension dataflow | `OECD:SNA_TABLE1(1.0)` | 3 | `{NSI}`, archive space | `{NSI}`, archive space |
+| A ten-dimension dataflow | `WB.DEC:DF_WDI_EDUCATION(1.2)`, then `WB.DEC:DF_WDI_POPULATION(1.0)` | 10, then 7 | `{FMR}` | `{NSI}`, design space |
+
+::: callout-tip
+**Running the queries yourself.** Every example is a URL plus a header, so any HTTP client works. With curl, `-g` is required: without it, curl reads the `[` and `]` of `c[TIME_PERIOD]` as a pattern to expand. Quote the URL so that the shell leaves `?` and `&` alone:
+
+```bash
+curl -g -sS -H "Accept: application/vnd.sdmx.data+csv;version=2.0" \
+  "https://archivensiserviceqa.asestg.worldbank.org/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.C+V+VOB?c[TIME_PERIOD]=ge:2015%2Ble:2015"
+```
+
+The Python equivalent is the shape chapter 01 used. `requests` sends the URL as written, so put `%2B` in the query string yourself and leave the `+` of the key alone:
+
+```python
+import requests
+
+NSI = "https://archivensiserviceqa.asestg.worldbank.org"   # the archive-space entry point
+
+url = (f"{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.C+V+VOB"
+       "?c[TIME_PERIOD]=ge:2015%2Ble:2015")
+resp = requests.get(url, headers={"Accept": "application/vnd.sdmx.data+csv;version=2.0"})
+print(resp.status_code)
+print(resp.text)
+```
+
+If you are writing Python for anything larger than a one-off query, [pysdmx](https://py.sdmx.io) builds these URLs for you and parses the answers into its own model; its documentation covers both grammars. This chapter stays at the level of the URL so that you can read what any client sends.
+:::
+
+::: callout-note
+**About the expected outputs.** None of the output blocks below is a captured server response: the environment in which this chapter was written could not reach the services. Every row shown is real data taken from files in this handbook or its companion repository and filtered exactly as the query would filter it. For the first tier, the rows come from `inputs/OECD_SNA_TABLE1_1.0_-_AUS_data.csv` and `inputs/OECD_SNA_TABLE1_1.0_-_AUS_metadata.csv`, the SDMX-CSV exports chapter 01 links. For the second tier, they come from the SDMX-ML snapshots under `inputs/sdmx/` in the vtl-toy-pipeline repository, re-encoded into the same CSV layout. The bundled exports carry no attribute columns, so a live answer may add columns for the DSD's attributes after `OBS_VALUE`, and its rows may come in a different order. Row counts and values are what to compare.
+:::
+
+### A three-dimension dataflow: OECD:SNA_TABLE1(1.0)
+
+`OECD:SNA_TABLE1(1.0)` is the dataflow chapters 00 and 01 built and uploaded step by step: OECD's national accounts table 1, with a DSD of three coded dimensions plus time. Only a test file was loaded — 43 observations, all for Australia and all for 2015, with small integers as values — which makes it ideal here: you can check every answer by hand against the export in `inputs/`.
+
+#### 01 — `structure`: read the DSD before writing any key
+
+The first query of any data pull is not a data query. You need the dimension order, and only the DSD knows it. Query the *dataflow* and ask for its descendants: the answer carries the dataflow, the DSD it references, and the concept scheme and codelists the DSD references in turn.
+
+```
+{NSI}/rest/v2/structure/dataflow/OECD/SNA_TABLE1/1.0?references=descendants&detail=referencepartial
+Accept: application/vnd.sdmx.structure+xml;version=3.0.0
+```
+
+Two parameters do the work. `references=descendants` follows every reference recursively. `detail=referencepartial` trims each referenced codelist to the codes the dataflow actually allows, so `CL_LOCATION` comes back with the countries loaded rather than all 1,831 of its codes. Inside the DSD, find the `DimensionList`:
+
+```
+--- DimensionList of OECD:DSD_SNA_TABLE1(1.0), abridged ---------
+<structure:DimensionList id="DimensionDescriptor">
+    <structure:Dimension id="LOCATION" position="1">
+        ... <Ref id="CL_LOCATION" version="1.0" agencyID="OECD" package="codelist" class="Codelist" />
+    </structure:Dimension>
+    <structure:Dimension id="TRANSACT" position="2">
+        ... <Ref id="CL_SNA_TABLE1__TRANSACT" version="1.0" agencyID="OECD" package="codelist" class="Codelist" />
+    </structure:Dimension>
+    <structure:Dimension id="MEASURE" position="3">
+        ... <Ref id="CL_SNA_TABLE1__MEASURE" version="1.0" agencyID="OECD" package="codelist" class="Codelist" />
+    </structure:Dimension>
+    <structure:TimeDimension id="TIME_PERIOD" position="4">
+        ... <structure:TextFormat textType="ObservationalTimePeriod" />
+    </structure:TimeDimension>
+</structure:DimensionList>
+```
+
+The excerpt is taken from the DSD file chapter 01 uploaded, `inputs/DataStructure_DSD_SNA_TABLE1.xml`, which is SDMX-ML 2.1; an SDMX-ML 3.0 answer lists the same dimensions with the same `id` and `position` attributes but writes each reference as a URN, as example 08 shows. Three coded dimensions in positions 1 to 3, and a time dimension in position 4 that will never appear in a key. Note also that the dataflow is `SNA_TABLE1` while its DSD is `DSD_SNA_TABLE1`: you queried the dataflow and followed its reference, so you never needed to know the DSD's id in advance. **Every key for this dataflow has exactly three positions, in the order `LOCATION`, `TRANSACT`, `MEASURE`; `TIME_PERIOD` is not one of them.**
+
+#### 02 — one exact series
+
+Fill each position with one code from its codelist and join them with dots:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.VOB
+Accept: application/vnd.sdmx.data+csv;version=2.0
+```
+
+```
+--- AUS.P51.VOB -- 1 row ----------------------------------------
+STRUCTURE,STRUCTURE_ID,ACTION,LOCATION,TRANSACT,MEASURE,TIME_PERIOD,OBS_VALUE
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,VOB,2015,19
+```
+
+Gross fixed capital formation (`P51`) for Australia (`AUS`) at constant prices, OECD base year (`VOB`). The dataflow holds a single year, so one series is one row. Read the CSV header against the key: after three bookkeeping columns come the dimensions in DSD order, then `TIME_PERIOD`, then the value. The answer confirms the dimension order — but only once you have already got it right. **One value per position, in DSD order, joined by dots.**
+
+#### 03 — `+`: several values in one position
+
+The same transaction at three price measures at once:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.C+V+VOB
+```
+
+```
+--- AUS.P51.C+V+VOB -- 3 rows -----------------------------------
+STRUCTURE,STRUCTURE_ID,ACTION,LOCATION,TRANSACT,MEASURE,TIME_PERIOD,OBS_VALUE
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,C,2015,17
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,V,2015,18
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,VOB,2015,19
+```
+
+Current prices (`C`), constant prices at the national base year (`V`) and at the OECD base year (`VOB`). The `+` sits *inside* the third position; the key still has two dots and three positions. The operator works in any position and in several at once: `AUS.P51+P31S14.C+V` asks for two transactions (gross fixed capital formation and final consumption expenditure of households) times two measures, four series, all four of which are in the export. In the path, `+` is a literal character and must not be encoded — the opposite of what the query string needs, as example 05 shows. **`+` means "any of these" inside a single position and never crosses a dot.**
+
+#### 04 — the empty position: a wildcard that keeps the dots
+
+Leave a position empty and it matches every code:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.*
+```
+
+```
+--- AUS.P51. -- 3 rows ------------------------------------------
+STRUCTURE,STRUCTURE_ID,ACTION,LOCATION,TRANSACT,MEASURE,TIME_PERIOD,OBS_VALUE
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,C,2015,17
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,V,2015,18
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,VOB,2015,19
+```
+
+The two spellings are equivalent: `*` is the SDMX 3.0 wildcard, the empty position is the older spelling that both dialects accept. Both return the three rows of example 03, because `C`, `V` and `VOB` are the only measures loaded for `P51`. Now empty the *middle* position instead:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS..VOB
+```
+
+```
+--- AUS..VOB -- 11 rows -----------------------------------------
+STRUCTURE,STRUCTURE_ID,ACTION,LOCATION,TRANSACT,MEASURE,TIME_PERIOD,OBS_VALUE
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P31S14,VOB,2015,13
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P31S15,VOB,2015,16
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51,VOB,2015,19
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N1111,VOB,2015,22
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N1112,VOB,2015,25
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N1113,VOB,2015,28
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N11131,VOB,2015,31
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N1113I,VOB,2015,34
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N1113O,VOB,2015,37
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N1114,VOB,2015,40
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,P51N112,VOB,2015,43
+```
+
+Every transaction that has a value at OECD base-year prices: eleven of them. Look at the two consecutive dots in `AUS..VOB`. They are not a typo, and deleting one of them would turn a three-position key into a two-position one, which the service rejects (example 07). **An empty position means "any value"; the dots stay, so the number of dots never changes.**
+
+#### 05 — `*` and `c[TIME_PERIOD]`: everything, then a time window
+
+The whole dataflow is `*` as the key; omitting the key segment altogether means the same. Time is not in the key, so a time window goes in the query string:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/*?c[TIME_PERIOD]=ge:2015%2Ble:2015
+```
+
+```
+--- * -- 43 rows (first 5 shown) --------------------------------
+STRUCTURE,STRUCTURE_ID,ACTION,LOCATION,TRANSACT,MEASURE,TIME_PERIOD,OBS_VALUE
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,B1G_P119,C,2015,1
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,B1G_P119,V,2015,2
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,B1G_P119,VP,2015,3
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,B1GA_B,V,2015,4
+dataflow,OECD:SNA_TABLE1(1.0),I,AUS,B1GC_E,V,2015,5
+   ... 38 more rows ...
+[43 rows]
+```
+
+`c[TIME_PERIOD]=ge:2015%2Ble:2015` reads "`TIME_PERIOD` at or after 2015 *and* at or before 2015". Inside `c[...]`, `+` joins two conditions with AND, and because a `+` in a query string is decoded as a space it must travel as `%2B`; chapter 01's example carries the same `%2B`. Shift the window and the answer is empty: `c[TIME_PERIOD]=ge:2016` matches none of the 43 rows, and a well-behaved service says so with `204 No Content` (older .Stat releases answer `404` with a "no results" message). Add `lastNObservations=1` to any of these queries and each series is cut down to its most recent observation, which is the usual way to ask "what is the latest value?" without knowing the year. **Time is filtered in the query string, not in the path; inside `c[...]`, `+` is AND and travels as `%2B`.**
+
+#### 06 — the same query in another representation
+
+Nothing in example 03's URL said CSV. Change only the header:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.C+V+VOB
+Accept: application/vnd.sdmx.data+json;version=2.0
+```
+
+The same three observations come back as SDMX-JSON 2.0: a `structures` block that lists each dimension with its codes *and their names*, and a `dataSets` block in which every observation is addressed by the index of its codes in that list. It is the format chapter 01's R and Python snippets parse, and the one to use when you want labels without a second query for the codelists. Two query parameters change the *layout* of the answer without changing the selection:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.C+V+VOB?dimensionAtObservation=AllDimensions&attributes=none
+```
+
+`dimensionAtObservation=AllDimensions` asks for a flat layout in which every observation carries all of its dimension values; the default, `TIME_PERIOD`, groups observations into series and leaves only the period at the observation level. The companion repository's snapshots were fetched with `AllDimensions`, which is why example 12's XML shows every code on every observation. `attributes=none` drops the attributes. CSV is flat whatever you ask, so on a CSV answer only the second parameter is visible. **The path selects the data, the `Accept` header selects the representation, and `dimensionAtObservation` selects the layout.**
+
+#### 07 — reading a failure
+
+Four deliberate mistakes on the same dataflow. The status codes are those of the SDMX REST specification; record what your instance actually returns, because .Stat releases differ on the empty case:
+
+| Mistake | Request | Answer | Why |
+|---|---|---|---|
+| two positions for a three-dimension DSD | `.../SNA_TABLE1/1.0/AUS.P51` | `400 Bad Request` | the key has one dot; the DSD needs two |
+| a code that exists in no codelist | `.../SNA_TABLE1/1.0/AUS.XYZ.VOB` | `204 No Content` or an empty body; some services reject the unknown code with `400` or `422` | the key parses but matches nothing — the export has no `XYZ` row |
+| a version that does not exist | `.../SNA_TABLE1/1.9/AUS.P51.VOB` | `404 Not Found` | there is no `OECD:SNA_TABLE1(1.9)` |
+| a format the service cannot produce | `Accept: application/vnd.sdmx.data+csv;version=9.9` | `406 Not Acceptable` | no such media type |
+
+Each of these is diagnosable from the status code alone, before you open the body, and two habits prevent most of them: count the dots against the `DimensionList` of example 01, and when unsure of a code, ask a `structure` query for the codelist rather than guessing. **Read the status code first: `400` means count the dots, `404` means check agency, id and version, an empty answer means check the codes and the time window, and `406` means change the `Accept` header.**
+
+#### What the SNA examples taught
+
+| Example | Feature | The lesson |
+|---|---|---|
+| 01 structure | `references=descendants`, `detail=referencepartial` | The `DimensionList` is the template of every key; `TIME_PERIOD` has a position in the DSD but none in the key |
+| 02 one series | the series key | One value per position, DSD order, dots between |
+| 03 OR | `+` | Any of several values, inside one position |
+| 04 wildcard | empty position, `*` | Any value; the dot count never changes |
+| 05 time | `*`, `c[TIME_PERIOD]`, `lastNObservations` | Time lives in the query string; `+` is AND there and travels as `%2B` |
+| 06 format | `Accept`, `dimensionAtObservation`, `attributes` | The path selects, the header formats, the parameters lay out |
+| 07 failures | status codes | `400` dots, `404` triple, empty codes, `406` header |
+
+### A ten-dimension dataflow: the WDI flows
+
+The second tier keeps the grammar and swaps the test dataflow for two real World Bank ones. `WB.DEC:DF_WDI_EDUCATION(1.2)` is the education-spending dataflow of the VTL chapter: 1169 observations of government expenditure on education as a percentage of GDP (indicator `XPD_GOV`) for 186 countries over 2015–2021, behind a DSD with ten dimensions in the key. `WB.DEC:DF_WDI_POPULATION(1.0)` supplies a second, seven-dimension DSD for the examples on long `+` lists. Structures come from FMR and data from the design-space NSI, the two sources from which the companion repository's `tools/fetch_inputs.py` snapshotted them.
+
+::: callout-note
+**About the inputs.** The rows shown in this tier are re-encoded from the SDMX-ML snapshots under `inputs/sdmx/` in the vtl-toy-pipeline repository, which were taken once from the World Bank QA environment. As in the VTL chapter, they illustrate the API and are not a source of World Bank statistics.
+:::
+
+#### 08 — a ten-dimension DSD and the full key
+
+Structure first, this time from the registry:
+
+```
+{FMR}/sdmx/v2/structure/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2?references=children
+```
+
+`references=children` is one step short of `descendants`: it brings the DSD, and the constraints and categorisations attached to the dataflow, but not the codelists behind the DSD — all you need to learn the order, and about a megabyte less. FMR answers in SDMX-ML 3.0 when no `Accept` header is sent; `inputs/sdmx/wdi_education_dataflow.xml` in the companion repository is this exact answer. In it, each `<str:Dimension>` carries its `id` and `position`, and its `<str:Enumeration>` names the codelist as a URN:
+
+| Position | Dimension | Codelist | Germany's education-spending series |
+|---|---|---|---|
+| 1 | `REF_AREA` | `WB:CL_AREA(2.0)` | `DEU` |
+| 2 | `INDICATOR` | `WB.DEC:CL_WDI_EDUCATION_INDICATOR(1.0)` | `XPD_GOV` — government expenditure on education |
+| 3 | `SEX` | `SDMX:CL_SEX(2.1)` | `_Z` — not applicable |
+| 4 | `AGE` | `WB:CL_AGE(1.0)` | `_Z` |
+| 5 | `EDUCATION_LEVEL` | `WB.DEC:CL_WDI_EDUCATION_LEVEL(1.0)` | `_T` — total |
+| 6 | `INSTITUTION_TYPE` | `WB.DEC:CL_WDI_INSTITUTION(1.0)` | `_T` |
+| 7 | `ATTAINMENT_LEVEL` | `WB.DEC:CL_WDI_ATTAINMENT_LEV(1.0)` | `_Z` |
+| 8 | `EST_METHOD` | `WB.DEC:CL_WDI_EST_METHOD(1.0)` | `_Z` |
+| 9 | `UNIT_MEASURE` | `WB:CL_UNIT_MEASURE(1.1)` | `PT_GDP` — percentage of GDP |
+| 10 | `FREQ` | `SDMX:CL_FREQ(2.1)` | `A` — annual |
+| — | `TIME_PERIOD` | none: a time dimension | `c[TIME_PERIOD]=...` |
+
+The DSD is `WB.DEC:DS_WDI_EDUCATION(1.2)` — once more an id different from the dataflow's. Ten positions, so the full key for Germany's series has nine dots:
+
+```
+{NSI}/rest/v2/data/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2/DEU.XPD_GOV._Z._Z._T._T._Z._Z.PT_GDP.A
+Accept: application/vnd.sdmx.data+csv;version=2.0
+```
+
+```
+--- DEU.XPD_GOV._Z._Z._T._T._Z._Z.PT_GDP.A -- 7 rows ------------
+STRUCTURE,STRUCTURE_ID,ACTION,REF_AREA,INDICATOR,SEX,AGE,EDUCATION_LEVEL,INSTITUTION_TYPE,ATTAINMENT_LEVEL,EST_METHOD,UNIT_MEASURE,FREQ,TIME_PERIOD,OBS_VALUE
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2015,4.76157999038696
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2016,4.76321983337402
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2017,4.77830982208252
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2018,4.88401985168457
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2019,5.02757978439331
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2020,5.51600980758667
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2021,5.36734008789062
+```
+
+Six of the ten values are `_Z` ("not applicable") or `_T` ("total"). The DSD is shared with breakdowns by sex, age, education level and institution type that this indicator does not use, yet every one of those positions has to be spelled out; leave one out and the key has eight dots, which is a `400`. The seven rows are the seven years, which is what a key that pins every dimension returns: one series, all of its observations. **Ten dimensions, ten positions, nine dots; `_Z` and `_T` are real codes that must be spelled out like any other.**
+
+#### 09 — empty positions at scale, and `lastNObservations`
+
+Now the wildcard of example 04 on a long key. Everything between the indicator and the frequency is left empty, and only the last two observations of each series are requested:
+
+```
+{NSI}/rest/v2/data/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2/DEU.XPD_GOV........A?lastNObservations=2
+```
+
+Reading eight consecutive dots is where hand-written keys go wrong, so line the key up under the `DimensionList`:
+
+```
+REF_AREA . INDICATOR . SEX . AGE . EDUCATION_LEVEL . INSTITUTION_TYPE . ATTAINMENT_LEVEL . EST_METHOD . UNIT_MEASURE . FREQ
+DEU      . XPD_GOV   .     .     .                 .                  .                  .            .              . A
+
+DEU.XPD_GOV........A
+```
+
+Ten positions, nine dots, seven of the positions empty. The eight dots between `XPD_GOV` and `A` are one separator after the indicator plus one after each of the seven empty positions.
+
+```
+--- DEU.XPD_GOV........A?lastNObservations=2 -- 2 rows ----------
+STRUCTURE,STRUCTURE_ID,ACTION,REF_AREA,INDICATOR,SEX,AGE,EDUCATION_LEVEL,INSTITUTION_TYPE,ATTAINMENT_LEVEL,EST_METHOD,UNIT_MEASURE,FREQ,TIME_PERIOD,OBS_VALUE
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2020,5.51600980758667
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2021,5.36734008789062
+```
+
+The same series as example 08, cut to 2020 and 2021. It is the same series only because this dataflow holds one series per country for `XPD_GOV`; on a dataflow with breakdowns by sex or age, the empty positions would return every breakdown, which is sometimes what you want and sometimes several megabytes you did not. **Count the empty positions too: the dot count of a key is fixed by the DSD, not by how many values you know.**
+
+#### 10 — many countries with `+`, on a second dataflow
+
+A different dataflow means a different `DimensionList`, so start again with the structure:
+
+```
+{FMR}/sdmx/v2/structure/dataflow/WB.DEC/DF_WDI_POPULATION/1.0?references=children
+```
+
+`WB.DEC:DS_WDI_POPULATION(1.0)` has seven dimensions in the key: `REF_AREA`, `INDICATOR`, `SEX`, `AGE`, `URBANIZATION`, `UNIT_MEASURE`, `FREQ`. Population totals are `INDICATOR=POP` with the totals `_T` for sex, age and urbanisation, in persons (`PS`), annual (`A`). Three countries in the first position, and a three-year window:
+
+```
+{NSI}/rest/v2/data/dataflow/WB.DEC/DF_WDI_POPULATION/1.0/DEU+BRA+FRA.POP._T._T._T.PS.A?c[TIME_PERIOD]=ge:2019%2Ble:2021
+```
+
+```
+--- DEU+BRA+FRA.POP._T._T._T.PS.A -- 9 rows ---------------------
+STRUCTURE,STRUCTURE_ID,ACTION,REF_AREA,INDICATOR,SEX,AGE,URBANIZATION,UNIT_MEASURE,FREQ,TIME_PERIOD,OBS_VALUE
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,DEU,POP,_T,_T,_T,PS,A,2019,83092962
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,DEU,POP,_T,_T,_T,PS,A,2020,83160871
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,DEU,POP,_T,_T,_T,PS,A,2021,83196078
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,BRA,POP,_T,_T,_T,PS,A,2019,207455459
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,BRA,POP,_T,_T,_T,PS,A,2020,208660842
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,BRA,POP,_T,_T,_T,PS,A,2021,209550294
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,FRA,POP,_T,_T,_T,PS,A,2019,67382061
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,FRA,POP,_T,_T,_T,PS,A,2020,67601110
+dataflow,WB.DEC:DF_WDI_POPULATION(1.0),I,FRA,POP,_T,_T,_T,PS,A,2021,67842811
+```
+
+Three series, three years each. The `+` list scales: `tools/fetch_inputs.py` builds this very key with all 186 countries of the education dataflow in the first position, a URL of about a kilobyte, and pins the other six positions precisely because without them the answer is every breakdown of population for every country, some 26 MB. A list long enough to overflow what the service accepts comes back as `414 URI Too Long`; then split it into several requests, or move the filter to `c[REF_AREA]`, which is the next example. **A `+` list scales to dozens of values in one position; the other positions are what keep the answer small.**
+
+#### 11 — `c[REF_AREA]`: filtering by name instead of position
+
+The component filter of example 05 works on any dimension, not just time. This selects the same three countries from the education dataflow by *name*, with the key left entirely open:
+
+```
+{NSI}/rest/v2/data/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2/*?c[REF_AREA]=DEU,BRA,FRA&c[TIME_PERIOD]=ge:2019%2Ble:2021
+```
+
+And this is the positional spelling of the same selection:
+
+```
+{NSI}/rest/v2/data/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2/DEU+BRA+FRA.XPD_GOV........A?c[TIME_PERIOD]=ge:2019%2Ble:2021
+```
+
+```
+--- c[REF_AREA]=DEU,BRA,FRA -- 9 rows ---------------------------
+STRUCTURE,STRUCTURE_ID,ACTION,REF_AREA,INDICATOR,SEX,AGE,EDUCATION_LEVEL,INSTITUTION_TYPE,ATTAINMENT_LEVEL,EST_METHOD,UNIT_MEASURE,FREQ,TIME_PERIOD,OBS_VALUE
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2019,5.02757978439331
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2020,5.51600980758667
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,DEU,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2021,5.36734008789062
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,BRA,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2019,5.96346998214722
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,BRA,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2020,5.7714900970459
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,BRA,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2021,5.4969801902771
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,FRA,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2019,5.36638021469116
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,FRA,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2020,5.65871000289917
+dataflow,WB.DEC:DF_WDI_EDUCATION(1.2),I,FRA,XPD_GOV,_Z,_Z,_T,_T,_Z,_Z,PT_GDP,A,2021,5.41743993759155
+```
+
+Both queries return these nine rows, but they are not the same question. The positional key also pins `INDICATOR` and `FREQ`; the named filter pins nothing but the country and the years, and returns the same rows only because this dataflow holds one series per country. Notice the two grammars on the one character they share: the countries are joined with `,` inside `c[REF_AREA]` and with `+` inside the key, while the `+` inside `c[TIME_PERIOD]` is an AND. Use the key for the dimensions you know the position of; use `c[...]` for ranges, for attributes, and for the days you do not want to count dots. **`c[DIMENSION]` filters by name with no dot counting, but its OR is `,` and its AND is `+`, the reverse of the key.**
+
+#### 12 — the SDMX 2.1 dialect, side by side
+
+The .Stat NSI also serves the older SDMX 2.1 grammar under `/rest/`, and you will meet it in the URLs the .Stat Data Explorer generates, in the APIs of most international organisations, and in `tools/fetch_inputs.py`, which fetched the education data with exactly this request:
+
+```
+{NSI}/rest/data/WB.DEC,DF_WDI_EDUCATION,1.2/all?startPeriod=2015&endPeriod=2021&dimensionAtObservation=AllDimensions&detail=dataonly
+```
+
+The same request in the grammar of this chapter:
+
+```
+{NSI}/rest/v2/data/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2/*?c[TIME_PERIOD]=ge:2015%2Ble:2021&dimensionAtObservation=AllDimensions&attributes=none
+```
+
+| SDMX 2.1, under `/rest/` | SDMX 3.0, under `/rest/v2/` |
+|---|---|
+| `/data/WB.DEC,DF_WDI_EDUCATION,1.2/{key}` — agency, id and version in one comma-separated segment | `/data/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2/{key}` — a context segment, then three segments |
+| `all` for the whole key; `latest` and `all` for versions | `*` for the whole key; `~` and `*` for versions |
+| `startPeriod=2015&endPeriod=2021` | `c[TIME_PERIOD]=ge:2015%2Ble:2021` |
+| `detail=full`, `dataonly`, `nodata`, `serieskeysonly` | `attributes=` and `measures=`: `dataonly` is `attributes=none`, `nodata` is `measures=none` |
+| `format=csv`, or an `Accept` header | an `Accept` header |
+| `dimensionAtObservation`, `firstNObservations`, `lastNObservations` | the same |
+| `/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2?references=all` for structures | `/structure/dataflow/WB.DEC/DF_WDI_EDUCATION/1.2?references=descendants` |
+| the key: dots, `+`, empty positions | **unchanged** |
+
+The 2.1 request above sent no `Accept` header, so the NSI answered in its default, SDMX-ML 2.1 generic data; the snapshot in the companion repository begins like this:
+
+```
+--- header of the SDMX-ML 2.1 answer, abridged ------------------
+<message:GenericData ...>
+  <message:Header>
+    <message:Sender id="Design-DotStatSuite" />
+    <message:Structure structureID="WB_DEC_DF_WDI_EDUCATION_1_2" dimensionAtObservation="AllDimensions">
+      <common:StructureUsage><Ref agencyID="WB.DEC" id="DF_WDI_EDUCATION" version="1.2" /></common:StructureUsage>
+    </message:Structure>
+    <message:DataSetID>DS_WDI_EDUCATION</message:DataSetID>
+  </message:Header>
+  <message:DataSet action="Information" structureRef="WB_DEC_DF_WDI_EDUCATION_1_2">
+    <generic:Obs>
+      <generic:ObsKey>
+        <generic:Value id="TIME_PERIOD" value="2015" />
+        <generic:Value id="REF_AREA" value="DJI" />
+        <generic:Value id="INDICATOR" value="XPD_GOV" />
+        ...
+      </generic:ObsKey>
+      <generic:ObsValue value="3.59895992279053" />
+    </generic:Obs>
+    ... 1168 more observations ...
+```
+
+Every observation names all of its dimensions — the effect of `dimensionAtObservation=AllDimensions` — and the header records the dataflow the data was requested through. Each dialect carries its own version numbers, its own keywords and its own time parameters, but the series key is written identically in both, which is why the previous ten examples transfer to any SDMX 2.1 service you meet. **Same key grammar in both dialects; only the envelope around it is old.**
+
+#### 13 — referential metadata: closing the loop with chapter 01
+
+Chapter 01 ended with a request that looked like a data query and returned no data. It can now be read in full:
+
+```
+{NSI}/rest/v2/data/dataflow/OECD/SNA_TABLE1/1.0/AUS.P51.VOB?c[TIME_PERIOD]=ge:2015%2Ble:2015&attributes=msd&measures=none
+Accept: application/vnd.sdmx.data+json;version=2.0
+```
+
+Nothing in the path says "metadata". The path is example 02's; the time window is example 05's. What changes the answer is the pair of parameters at the end: `measures=none` drops `OBS_VALUE`, and `attributes=msd` asks for the attributes defined not in the DSD but in the **metadata structure definition** — `MSD_SNA_TABLE1`, which chapter 01 uploaded alongside the DSD. Referential metadata is attached to *partial* keys, and the export in `inputs/` shows the four levels that apply to `AUS.P51.VOB`, with `~` marking a position the metadata does not depend on:
+
+| `LOCATION` | `TRANSACT` | `MEASURE` | Attributes filled at this level |
+|---|---|---|---|
+| `~` | `~` | `~` | `CONTACT_PERSON_ORGANISATION`, `UNIT_OF_MEASURE_USED`, `STATISTICAL_POPULATION`, `OTHER_COMMENTS` — the whole dataflow |
+| `AUS` | `~` | `~` | `DIRECT_SOURCE` ("Reply to the National Accounts Questionnaire from the Australian Bureau of Statistics, Canberra. …"), `KEY_STATISTICAL_CONCEPT` |
+| `AUS` | `~` | `VOB` | `UNIT_OF_MEASURE_USED` (Australian Dollar), `POWER_CODE` (6), `REFERENCE_PERIOD` (2015) |
+| `AUS` | `P51` | `VOB` | `KEY_STATISTICAL_CONCEPT` ("«Ownership transfer cost» are included in the total but have not been allocated by type of asset and by industry.") |
+
+A data query with the full key therefore returns the metadata of every level the key falls under: what applies to Australia, what applies to Australian figures at OECD base-year prices, and what applies to that one series. **Referential metadata rides the data URL; `attributes=msd&measures=none` is what turns a data query into a metadata query.**
+
+#### What the WDI examples taught
+
+| Example | Feature | The lesson |
+|---|---|---|
+| 08 full key | `references=children`, a ten-position key | Every position must be spelled out, `_Z` and `_T` included; nine dots for ten dimensions |
+| 09 empty positions | `lastNObservations` | The dot count is fixed by the DSD, not by what you know; empty positions return every breakdown |
+| 10 long OR list | `+` with many values, a second DSD | The other positions keep the answer small; `414` means split or move to `c[...]` |
+| 11 named filter | `c[REF_AREA]` | By name, no dots; OR is `,`, AND is `+` |
+| 12 SDMX 2.1 | `/rest/`, `startPeriod`, `detail` | Different envelope, same key |
+| 13 referential metadata | `attributes=msd`, `measures=none` | Metadata rides the data URL and is attached to partial keys |
+
+### What this chapter did not cover
+
+-   **`availability`** answers "given this partial key, which codes of dimension X still have data?", which is how a data-selection screen knows which countries to offer once an indicator is picked. Its path is the data path with a dimension id appended (`.../availability/dataflow/OECD/SNA_TABLE1/1.0/AUS../MEASURE`). Check that your instance implements it before building on it.
+-   **Change tracking**: `updatedAfter=<timestamp>` returns only observations changed since then, `includeHistory=true` returns earlier versions of them, and `asOf` rewinds a query to a point in time. All three are in the specification; their support varies between services.
+-   **Pagination** (`offset`, `limit`) and **sorting** (`sort`) arrived with version 2.2 of the API and are not yet common.
+-   **Writing** data and structures is not part of the REST query API at all. On .Stat it goes through the Transfer service and the DLM, which chapters 01 to 03 cover.
+-   **Authentication** for spaces that require it: the QA design space used here answered without a token, and public spaces always do; other spaces need the bearer token described in the .Stat documentation.
+
+## Summary
+
+-   The SDMX REST API has **five resources** on **one path grammar**: host, API version, resource, context, the agency/id/version triple, and — for data — the **series key**. The format is chosen by the **`Accept` header**, never by the URL.
+-   The **DSD's `DimensionList` is the template of the key**: position *i* of the key holds a value of dimension *i*, and the number of dots is fixed by the DSD. Read the structure before writing a key.
+-   Inside a position, a code selects one value, **`+`** any of several, and an **empty position or `*`** any value at all; `*` alone is the whole dataflow.
+-   **`TIME_PERIOD` is never in the key.** Time, attributes and measures are filtered in the query string with **`c[...]`**, whose grammar is the reverse of the key's: `,` is OR and `+` is AND, sent as `%2B`.
+-   Read the **status code first**: `400` means count the dots, `404` means check the triple, an empty answer means check the codes, `406` means change the header.
+-   The **SDMX 2.1 dialect** under `/rest/` changes the envelope — a comma-separated flow reference, `startPeriod`/`endPeriod`, `detail` — and leaves the key untouched.
+-   **Referential metadata** rides the data URL: `attributes=msd&measures=none`.
+
+## Further reading
+
+-   [SDMX REST API specification](https://github.com/sdmx-twg/sdmx-rest) — the normative OpenAPI definition and the per-resource guides in its `doc` folder; the 2.x releases are the SDMX 3.0 grammar used here, the 1.x releases the SDMX 2.1 grammar of example 12.
+-   [.Stat Suite documentation: the SDMX RESTful web service](https://sis-cc.gitlab.io/dotstatsuite-documentation/using-api/restful/) — what the NSI implements, the `format=` parameter, and the platform behaviours such as content constraints applied by default.
+-   [SDMX-CSV](https://github.com/sdmx-twg/sdmx-csv) and [SDMX-JSON](https://github.com/sdmx-twg/sdmx-json) — the two formats most of this chapter asks for, with their column and object layouts.
+-   [pysdmx documentation](https://py.sdmx.io) — the Python client used elsewhere in this handbook; it builds these URLs and parses the answers.
+-   [vtl-toy-pipeline: `tools/fetch_inputs.py`](https://github.com/WB-DECIS/vtl-toy-pipeline/blob/main/tools/fetch_inputs.py) — a real, working combination of FMR structure queries in SDMX 3.0 and NSI data queries in SDMX 2.1 against the World Bank QA environment.

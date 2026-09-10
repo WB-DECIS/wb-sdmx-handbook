@@ -21,7 +21,7 @@
       "checksum": "b20553ddd6fbcb1be252939d3968e9de"
     },
     "01-dataflow-step-by-step-creation.qmd": {
-      "checksum": "f2550f0b29e46814d79693bcf52fb140"
+      "checksum": "6f1b4edbe7e71f39eb0ca6d678574655"
     },
     "02-how-to-create-a-data-pipeline.qmd": {
       "checksum": "ce2046ec824e2863289c733a59a564b4"
@@ -30,13 +30,16 @@
       "checksum": "45e7dbcf0d6edcf7ecb41ce911e3b107"
     },
     "04-introduction-to-vtl.qmd": {
-      "checksum": "0f6815ef177319da914424cd13cc3ad3"
+      "checksum": "d3350edb721929d7d916d2caf6837f0c"
+    },
+    "05-working-with-the-sdmx-rest-api.qmd": {
+      "checksum": "2a01d4076eeef5775921d6fc372c4c34"
     },
     "README.md": {
-      "checksum": "080f2fe94d212c1a7eb542fdbc829d6f"
+      "checksum": "bbdac23db29dcc6729a63566840aecf7"
     },
     "_quarto.yml": {
-      "checksum": "66c5158ff001bb6510ea0adedf674cb9"
+      "checksum": "b3ff6a2c18cf4650485569c2f83066c8"
     },
     "cover.png": {
       "checksum": "308012df3fa962ae61c7114806331a72"
